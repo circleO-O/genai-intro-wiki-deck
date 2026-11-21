@@ -1,0 +1,85 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Log</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da}
+@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC",sans-serif}
+main{max-width:820px;margin:0 auto;padding:24px 16px 80px}
+a{color:var(--acc)}h1{font-size:1.7rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
+.cite{font:12px ui-monospace,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+table{border-collapse:collapse;width:100%}td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+nav{font-size:14px;color:var(--mut);margin-bottom:12px}
+</style></head><body><main>
+<nav><a href="index.html">← wiki 首頁</a> · <a href="../index.html">← 簡報</a></nav>
+<h1>Log</h1>
+<h2>[2026-11-21] setup | 建立 schema 與資料夾</h2>
+<ul>
+<li>將原 <code>wiki/</code> 資料夾(內含 10 份課程 PDF)改名為 <code>raw/</code>,新建 <code>wiki/</code>(sources/、concepts/、CLAUDE.md、index.md、log.md)。</li>
+<li>主題定為「生成式 AI 入門」,範圍採 10 份全部 ingest(討論後決定)。</li>
+</ul>
+<h2>[2026-11-21] problem | PDF 文字層缺字</h2>
+<ul>
+<li><code>pdftotext</code> 能抽出文字(共約 17 萬字),但投影片文字框被拆開:缺字(如「換你當 闆」少「老」)、順序亂。</li>
+<li>決策:文字層只當索引,不當唯一依據;亂掉或有關鍵圖的頁面必須用 Read 看頁面圖片。此規則寫入 CLAUDE.md 的 Ingest 步驟 1 與檢查 1。</li>
+</ul>
+<h2>[2026-11-21] ingest | 01–10 共 10 份 PDF(平行,每份一個子代理)</h2>
+<ul>
+<li>產出 <code>sources/01..10-*.md</code>,每個主張附 <code>[SNN p.N]</code>。</li>
+<li>各份用頁面圖片核對的程度不同:06 全 80 頁、09 全 36 頁、10 除 p.37 外全部;02、05、03、04、01、07、08 只核對部分頁面,其餘靠文字層與上下文補字。各 source 頁的「文字層異常處」列出未核對頁。</li>
+</ul>
+<h2>[2026-11-21] check1 | 出處檢查(程式 + 抽查)</h2>
+<ul>
+<li>程式檢查:10 份 source 頁共約 1,000 個 <code>[SNN p.N]</code>,頁碼皆在該 PDF 頁數內,且無串錯來源編號。通過。</li>
+<li>抽查(看頁面圖片):</li>
+<li>S02 p.87:原文確為「切線斜率指向(局部)極大值方向」。正確。</li>
+<li>S02 p.118:投影片文字與程式碼不一致(訓練資料/測試資料的說法),屬投影片筆誤;source 頁已照原文記錄並標註,簡報不採用。</li>
+<li>S03 p.62:0.26 與 0.24 與頁面一致,並手算驗證。正確。</li>
+<li>S05 p.45:p_t 與 x_t 同維度相加、低位數在前,正確。但「低位數頻率高」並非 p.45 內容,實際出自 p.43、p.47。<b>抓到 1 處錯標頁碼</b>,已修正。</li>
+<li>結論:頁碼存在檢查抓不到「頁碼存在但內容對不上」;這類錯誤只能靠看頁面內容抽查。</li>
+</ul>
+<h2>[2026-11-21] note | 投影片本身的怪處(簡報引用時不得自行修正或補定義)</h2>
+<ul>
+<li>「Contex Engineering」(S08 p.5、S09 p.4 拼法)與「Content Engineering」(S08 p.11、S07)並存。</li>
+<li>Harness、Loop、Graph Engineering 在 S08 p.5、S09 p.4 只點名,未給定義。</li>
+<li>S01 p.36「老版」為「老闆」之誤;S10 p.12「Gode Agent」為 Code Agent 之誤。</li>
+<li>S10 p.17「loop engineering 於 2026 年 6 月由 Addy Osmani 命名」為投影片上的說法,未獨立查證。</li>
+</ul>
+<h2>[2026-11-21] ingest | 概念頁整合(5 個子代理,15 頁)</h2>
+<ul>
+<li>規則:只能引用 sources/ 內已有的內容與出處標籤,不重讀 PDF、不加外部知識;source 頁標為未核對者,概念頁需標「未核對」。</li>
+<li>產出 15 個 concepts/*.md,並寫 index.md。</li>
+</ul>
+<h2>[2026-11-21] lint | 概念頁 vs source 頁</h2>
+<ul>
+<li>程式檢查:15 個概念頁共約 460 個出處,全部能在 source 頁找到;無失效 wikilink;無孤立頁。通過。</li>
+<li>發現:各 source 頁之間的說法有差異,均已寫在概念頁「來源差異」:</li>
+<li>Context Engineering 在 S09 p.4 位於 Chat Bot 與 AI Agent 的重疊處,S01、S08 則列在 AI Agent 底下。</li>
+<li>S09 p.5 說 Agent 涵蓋三種模式,S08 p.18 列四種。</li>
+<li>範例機率不同:S02 0.61/0.28/0.11、S03 0.6/0.3/0.1、S04 0.7/0.29/0.01(各自獨立的例子,非矛盾)。</li>
+<li>S02 用 MSE 算 loss,S03 主張交叉熵/KL。</li>
+<li>待辦:S02 p.87、S03 p.62、S05 p.45 已用圖片核對,概念頁中對應的「未核對」標記需更新;loss-and-gradient-descent.md 的未核對標記數為 0,但子代理回報有標,需確認用語。</li>
+</ul>
+<h2>[2026-11-21] query | 簡報製作(Graph 流程)</h2>
+<p>流程:檢索 wiki → 覆蓋率關卡 → 逐頁證據(slides.json,每個主張帶出處)→ 出處關卡(程式)→ 圖片核對 → 渲染 → 渲染檢查 → AI 忠實度審查。細節見專案 README。</p>
+<ul>
+<li>出處關卡(tools/check.py):只允許引用「已用圖片核對」的頁(tools/verified.json 白名單)。第一次執行:14 頁、89 個主張、124 個引用,<b>22 項引用落在未核對頁</b>,全數被擋下。</li>
+<li>圖片核對(獨立審查代理,只給主張與頁碼):22 項中 17 項 PASS、5 項 PARTIAL(措辭超出投影片原文):</li>
+<li>S08 p.18:投影片只在四個模式旁標示吳恩達,未寫「提出」。</li>
+<li>S08 p.23:內文為「LLM 不太會做的事,就不要再逼他了」,「改呼叫工具」是由標題推得。</li>
+<li>S08 p.26、p.29:「第一/第二階段」標籤不在頁面上。</li>
+<li>S02 p.70:考古題比喻的是模型應考,loss 是量差距;不是「loss 像考古題」。</li>
+<li>另:S08 p.24、p.29 原文為「一共 600 元」。</li>
+</ul>
+<p>  → 簡報措辭已改為貼近原文;核對通過的頁加入白名單,並回寫到概念頁(tool-use-and-patterns.md)。</p>
+<ul>
+<li>AI 忠實度審查(全新對話,只看簡報與 wiki):89 項中 14 項偏離,<b>其中程式關卡抓不到的類型</b>:</li>
+<li>多加了 wiki 沒有的話(「不需要被它嚇到」「最重要的自保」);</li>
+<li>把不同頁的內容合成一句(員工手冊 + 規則檔、GAN 範圍被省略);</li>
+<li>出處頁碼與句子不對應(S03 p.96 只支持「依機率抽字」,不支持「打分→softmax」);</li>
+<li>把「未核對」內容當成定論(S06 p.17,後經看圖確認屬實:標題「某種程度來說,人的幻覺也許比較嚴重」)。</li>
+</ul>
+<p>  → 全部改回貼近 wiki 原句;兩句「回顧/說明」標為 meta(不陳述新事實)。</p>
+<ul>
+<li>渲染檢查(Chrome headless,1280×720 / 1024×640 / 500×900):第一版第 13 頁在 1280×720 內容超出 33 px,且頁面選單浮在內容上蓋到邊緣 → 改為獨立底部控制列並收緊字級,重測 14 頁皆無溢出。</li>
+</ul></main></body></html>

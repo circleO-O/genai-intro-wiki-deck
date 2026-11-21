@@ -1,0 +1,87 @@
+---
+title: 09 換你當老闆:Agentic Work 與 AI 工作現場
+type: source
+sources: [09]
+---
+
+# 09 換你當老闆:Agentic Work 與 AI 工作現場
+
+來源:`raw/09換你當老闆.pdf`(共 36 頁,115-1 TAICA《生成式 AI:文字與圖像生成的原理與實務》,政治大學應用數學系 蔡炎龍)[S09 p.1]
+
+## 主題
+從「問 AI」(對話式 Chat)轉為「交辦給 AI」(代理式 Agentic):複習 AI Agent = AI Model + Harness,說明 harness 的組成、如何把工作交辦清楚、用專案資料夾加員工手冊(CLAUDE.md / AGENTS.md)讓 AI 持續工作,最後以 Karpathy 的 LLM Wiki 作為「教 AI 整理檔案成 wiki」的範例。[S09 p.3, p.11, p.16, p.33]
+
+## 章節脈絡
+- p.1:封面
+- p.2-11:01. 學做大老闆:現代的 Agentic AI(複習 Agent 定義、桌面整理比喻、Chat vs Agentic 對照)
+- p.12-24:02. Agentic AI 工作流(LLM 只會生成文字、Model + Harness、harness 組成、好的交辦、專案資料夾與員工手冊)
+- p.25-31:03. 一些專案範例(呆一布講義、粉專貼文工作室、圖像風格轉換)
+- p.32-35:04. Karpathy 的 LLM Wiki(raw → wiki 概念、Karpathy Gist、Farzapedia)
+- p.36:Q&A
+
+## 重點
+- 在 LLM 時代,基本上就是教 AI 用「我們做事的方法」做事情;公式為 AI Agent = AI Model + Harness。[S09 p.3]
+- 課程最後要「出去吹牛」的那張圖:Chat Bot 涵蓋 Prompt Engineering 與 Contex(原文拼法)Engineering;AI Agent 涵蓋 Contex Engineering、Harness Engineering、Loop Engineering、Graph Engineering。圖中 Chat Bot 的虛線框包住前兩層,AI Agent 的虛線框包住後四層(Contex Engineering 位於兩框重疊處)。結論是 AI Agent 其實只是「教 AI 做事的方法」。[S09 p.4]
+- 上次(前一單元)用 AISuite 自己手刻 AI Agents,涵蓋 Reflection、Tool Use、Planning 三項。[S09 p.5]
+- 手刻 Agent 多少還是麻煩,「完全沒有自己是老闆的感覺」。[S09 p.6]
+- 桌面整理例子(純聊天版):LLM 要求使用者把桌面所有檔案名稱(含副檔名)貼過去;使用者打了 87 個檔名;LLM 建議分成 5 類(作業、照片、講義、安裝檔、其他)並列出每個檔案該放的資料夾。[S09 p.7]
+- 在純聊天版中是「AI 出一張嘴,事情都你在做」:使用者一個一個抄檔名給 AI、AI 想分類排清單、使用者自己建 5 個資料夾、87 個檔案一個一個拖進去;AI 說「沒辦法,我沒手啊」。[S09 p.8]
+- 解法是回到 Tool Use:給 AI 可以處理檔案的工具。[S09 p.9]
+- Agentic 版:使用者說「幫我整理桌面,先給我看計畫」;AI 自己打開資料夾、看所有檔案;AI 提出分類計畫;使用者說「可以,照做」;AI 建資料夾、搬檔案、回報結果。變成「你出一張嘴,AI 來完成」,「我是慣老闆,事情都我做」(投影片中與前頁情境相反的對白)。[S09 p.10]
+- Chat 與 Agentic 對照(五列):你在做的事:問問題 vs 交辦一件工作;AI 像是:顧問 vs 員工、同事;過程:一問一答、你全程在場 vs 多步驟自己做、你可以離開;能碰的東西:對話框裡的文字 vs 檔案、瀏覽器、工具;你拿到的:一段回答 vs 一份成品。[S09 p.11]
+- LLM 本身只會生成文字:不會打開你的資料夾、不會建資料夾或修改檔案、不能自己上網查最新資料;因此問「那 AI 是怎麼會『動手』的?」。[S09 p.13]
+- 課程核心公式:AI Agent = AI Model(大腦)+ Harness(工作裝備)。Model 負責「想」:理解、規劃、判斷、生成;Harness 負責「做」:把模型說的「我要開這個檔案」真的執行,再把結果回報給模型。AI Agent 就是:教 AI 用你的方法做事。[S09 p.14]
+- 上個單元已做過 harness:「之前用 AISuite 寫的」對照「Agentic AI 使用方法」——問問題(相同);自己寫的 Python 函數當工具 vs 讀寫檔、終端機、搜尋;寫在程式裡的 system prompt vs CLAUDE.md / AGENTS.md;自己處理錯誤和重試 vs 產品幫你處理。[S09 p.15]
+- 一個完整的 harness 有六項:工作環境(有自己的電腦/沙盒,可存檔、跑程式)、工具(讀寫檔案、終端機、瀏覽器、網路搜尋)、連接器 MCP(接上 Gmail、行事曆、雲端硬碟等你的 App)、技能 Skills(一個資料夾加一份 SKILL.md,教它某件事的「標準作業流程」)、規則檔(CLAUDE.md / AGENTS.md,每次上工前先讀)、排程(時間到了自己開工)。[S09 p.16]
+- 模型大家都差不多,決定好不好用的是 Harness;Claude 用 CLAUDE.md,一般(通用)用 AGENTS.md。[S09 p.17]
+- 好老闆「通常」要說清楚三件事:要什麼成品(做完會拿到什麼、放在哪、什麼格式)、有什麼限制(哪些可以動、哪些不能動)、怎麼算做完(怎麼驗收)。重點是不要讓 AI 猜測。[S09 p.18]
+- 同一件事的交辦對照:爛的交辦「幫我整理桌面。」;好的交辦「幫我整理『桌面』這個資料夾。依用途分類,資料夾名稱用中文。不要刪除任何檔案,看不出用途的放進『待確認』。動手前先給我看分類計畫,做完列出每個檔案搬到哪裡。」[S09 p.19]
+- 可以做「專案型」AI Agent 的工具(投影片列出):ChatGPT(Work / Codex)、Claude(Chat 整合 / Code)、Gemini、OpenWorker(開源並且可用開源模型)、GrokBot(純雲端)、Muse。[S09 p.20]
+- AI Agents 專案通常會設一個專案資料夾,讓你的 AI 有存取權限。[S09 p.21]
+- 在專案資料夾裡寫一本「員工手冊」:Claude 專用叫 CLAUDE.md,一般通用叫 AGENTS.md;不一定非要這樣叫不可,也可以跟 AI 說先讀指定的「員工手冊」。「老話一句:這種規格書會由我們和 AI 討論出來!」[S09 p.22]
+- 專案可以一直在同一個對話中進行,但對話會越來越長,且換一台電腦就讀不到。[S09 p.23]
+- 解法:每次開對話框就先要求讀「員工手冊」(例如「請先讀 AGENTS.md,瞭解這個專案的內容。」);不用擔心沒有寫完美,可以持續改寫。[S09 p.24]
+- 範例一「呆一布講義」工作資料夾:資料夾內有 _to_delete、assets、CLAUDE.md、ideas、index.html、lessons、ppt、log.md、README.md、shared-assets、slide-notes、ppt-final、SETUP.md 等,看來複雜(畫面左側另有部分被對話框遮住)。[S09 p.26]
+- 其實結構不複雜:CLAUDE.md;ideas(整理想法)→ slide_notes → presentation(最終的簡報);assets(我們的小插圖)也流向 presentation;另有 index.html。[S09 p.27]
+- 做出來的結果(今天的作業):講義網站 https://diveai-lab.github.io/diveai-lessons/ ,收錄「認識 AI:入門作業」「一起潛進 AI!」「換你當老闆!」等講義與作業;「換你當老闆!」卡片的描述含:認識 AI Agent = Model + Harness、學會交辦、和 AI 討論寫出 CLAUDE.md、動手養一個 Karpathy 式 LLM Wiki、加碼認識 LangGraph、CrewAI、n8n。[S09 p.28]
+- 範例二「呆一布粉專貼文工作室」:資料夾含 AGENTS.md、assets、index.md、log.md、post(部分被遮)、reference、visual、多個 index-before-… 備份檔;講者說「這是我寫的哦」。[S09 p.29]
+- 該專案用於「每天出一篇貼文」;投影片截圖的貼文主題為「Agent Skills:換了 AI,做事的方法不用重新教?」,情境是每週請 AI 整理活動報名名單(重複報名要合併、飲食需求另外整理、缺資料先列出來問不要自己猜),討論出一套做法後,下週不用再講一次;圖示為 SKILL.md 從 AI A 交給 AI B。[S09 p.30]
+- 範例三「圖像風格轉換專案」:將一張簡單的手繪角色圖,轉換為呆一布風格的角色圖(投影片以左右兩張圖加箭頭表示)。[S09 p.31]
+- Karpathy 的 LLM Wiki,簡單說是打造你自己的 Wikipedia:你找的資料 → raw → wiki(含 index.md);教 AI 怎麼把檔案產生/修改 wiki 檔。[S09 p.33]
+- Karpathy 在 GitHub Gist 分享 llm-wiki.md(截圖頁面標題 LLM Wiki,副標 "A pattern for building personal knowledge bases using LLMs"),連結 https://bit.ly/llmwiki 。[S09 p.34]
+- Farzapedia:個人化的 wikipedia(截圖為「The Personal Encyclopedia」,由多年日記條目整理而成,畫面顯示 417 articles across 41 categories),連結 https://bit.ly/farzawiki 。[S09 p.35]
+
+## 關鍵術語
+- Agentic(代理式):你交辦一件工作,AI 多步驟自己做,你可離開,能碰檔案、瀏覽器、工具,拿到一份成品。[S09 p.11]
+- 對話式 Chat:你問問題,一問一答且你全程在場,AI 像顧問,能碰的只有對話框裡的文字,拿到一段回答。[S09 p.11]
+- AI Agent:AI Model + Harness;就是教 AI 用你的方法做事。[S09 p.3, p.14]
+- AI Model(大腦):負責想(理解、規劃、判斷、生成)。[S09 p.14]
+- Harness(工作裝備):負責做,把模型說的動作真的執行並把結果回報給模型。[S09 p.14]
+- Harness 六要素:工作環境(沙盒)、工具、連接器(MCP)、技能(Skills)、規則檔、排程。[S09 p.16]
+- CLAUDE.md / AGENTS.md:專案「員工手冊」,每次上工前先讀;Claude 專用 vs 一般通用,檔名不一定要固定。[S09 p.16, p.22]
+- Skills(技能):一個資料夾加一份 SKILL.md,教 AI 某件事的標準作業流程。[S09 p.16]
+- MCP 連接器:接上 Gmail、行事曆、雲端硬碟等使用者的 App。[S09 p.16]
+- 交辦三件事:要什麼成品、有什麼限制、怎麼算做完(不要讓 AI 猜測)。[S09 p.18]
+- 專案資料夾:讓 AI 有存取權限的資料夾,AI Agents 專案通常會設一個。[S09 p.21]
+- Prompt / Contex(原文拼法)/ Harness / Loop / Graph Engineering:p.4 圖中的五個層次;Chat Bot 對應前兩者,AI Agent 對應後四者。本頁只列名稱,未逐項定義。[S09 p.4]
+- LLM Wiki(Karpathy):raw → wiki 的個人 Wikipedia 做法,教 AI 把檔案產生/修改成 wiki 檔,wiki 內有 index.md。[S09 p.33]
+
+## 例子/比喻
+- 老闆與員工:Chat 時 AI 是顧問,Agentic 時 AI 是員工、同事;使用者要學做「大老闆」。[S09 p.2, p.11]
+- 「AI 出一張嘴,事情都你在做」vs「你出一張嘴,AI 來完成」:以整理桌面 87 個檔案為例對照。[S09 p.7, p.8, p.10]
+- 「我沒手啊」:LLM 只會生成文字,沒有手去操作檔案,需 harness 與工具。[S09 p.8, p.13]
+- 慣老闆(投影片用語):使用者交辦後由 AI 完成。[S09 p.10]
+- 員工手冊:CLAUDE.md / AGENTS.md 比喻成給 AI 的員工手冊;「這種規格書會由我們和 AI 討論出來」。[S09 p.22]
+- 好壞交辦:「幫我整理桌面。」vs 附有分類規則、限制、先給計畫、事後報告的完整指令。[S09 p.19]
+- 活動報名名單:每週請 AI 整理名單,討論出做法後不用每週重教(Agent Skills 動機)。[S09 p.30]
+
+## 文字層異常處
+文字層(`raw_text/09.txt`)幾乎每頁都有缺字、順序錯亂(標題與氣泡文字被拆散,部分字如「闆」「老」「工」「自己」「方」等被單獨列出)。以下頁面已用 PDF 頁面圖片逐頁核對:
+- p.1-24:全部以圖片核對(標題、氣泡、表格、流程圖皆需圖片重建)。其中 p.4(五層工程圖與虛線框範圍)、p.10(流程箭頭順序與對白)、p.11(Chat vs Agentic 表格)、p.14(Model/Harness 說明)、p.15(對照表)、p.16(六要素)、p.18-19(三件事與好壞交辦)尤其依賴圖片。
+- p.20:文字層缺各工具所屬標籤,依圖片整理(ChatGPT / Claude / Gemini / OpenWorker / GrokBot / Muse 及其說明)。
+- p.22、p.24:文字層缺字(「不一定非要…」「瞭解」等),已核對。
+- p.26-31:文字層幾乎只有標題,內容(資料夾檔名、貼文內容)全靠圖片;p.26 與 p.29 的資料夾截圖有部分被對話框遮住,未列入的檔名無法確認。
+- p.28:截圖為網頁縮圖,卡片描述文字小,依圖片轉錄。
+- p.33-35:文字層缺連結與 GitHub、Farzapedia 截圖內容,依圖片核對;p.35 的「417 articles across 41 categories」來自截圖。
+- p.25、p.32 為章節分隔頁(03、04),文字層僅有標題。
+- p.36:Q&A 頁,無文字內容。

@@ -1,0 +1,66 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>AI 風險與負責任使用</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da}
+@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC",sans-serif}
+main{max-width:820px;margin:0 auto;padding:24px 16px 80px}
+a{color:var(--acc)}h1{font-size:1.7rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
+.cite{font:12px ui-monospace,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+table{border-collapse:collapse;width:100%}td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+nav{font-size:14px;color:var(--mut);margin-bottom:12px}
+</style></head><body><main>
+<nav><a href="index.html">← wiki 首頁</a> · <a href="../index.html">← 簡報</a></nav>
+<h1>AI 風險與負責任使用</h1>
+<h2>一句話定義</h2>
+<p>S06 以「AI 的四個風險」(濫用、錯誤對齊、錯誤、結構性風險)為框架,並討論幻覺、意識、隱私、中國模型疑慮與負責任使用。<span class="cite">S06 p.25</span><span class="cite">S06 p.32</span></p>
+<h2>白話解釋(給完全沒學過的人,可用講者的比喻)</h2>
+<ul>
+<li>幻覺:引用 Karpathy,LLM 是「作夢的機器」,搜索引擎是 0% 的夢境但不會創造;幻覺不是錯誤,而是 LLM 最偉大的特點。<span class="cite">S06 p.16</span></li>
+<li>人的幻覺也許更嚴重,例如「AI 會的,就以為自己也會了」。<span class="cite">S06 p.17</span></li>
+<li>與 AI 的關係:「你們是夥伴」,不要覺得 AI 一定對,也不要笑它不知道你知道的東西。<span class="cite">S06 p.47</span></li>
+<li>最重要的使用技巧:一定要讀它寫了什麼;沒有寫錯不代表寫對了我們的意思。<span class="cite">S06 p.33</span></li>
+</ul>
+<h2>重點</h2>
+<h3>四個風險</h3>
+<ul>
+<li>濫用(主因:人類有惡意)、錯誤對齊(主因:AI 和人類價值不一致)、錯誤(主因:世界很複雜,出了沒想到的 bug)、結構性風險(主因:多個 AI Agents、人類交互產生結構性問題)。<span class="cite">S06 p.25</span></li>
+</ul>
+<h3>DeepSeek 與中國模型</h3>
+<ul>
+<li>線上版的可能比 ChatGPT 還需要擔心。<span class="cite">S06 p.26</span></li>
+<li>本地端執行時,有人會覺得 DeepSeek 不會回答某些敏感問題,這些可以想見,但可能不是最重要的問題。<span class="cite">S06 p.27</span></li>
+<li>Perplexity 推出去審查版 R1-1776;許多中國開源模型也有人做了去審查版。<span class="cite">S06 p.28</span></li>
+<li>更要小心的是不一定故意做的:DeepSeek 沒公開訓練資料,但可預期簡體中文比例可能比 ChatGPT、Llama 等更高,即使不刻意,也會潛移默化影響常使用的人。<span class="cite">S06 p.29</span></li>
+<li>「推理能力強」也是危機:引用 arXiv 2502.12893v1(H-CoT),沒有「思考」的模型有 98% 會正確拒絕回覆犯罪策略等;加上思考的模型遇到 H-CoT(劫持思維鏈)攻擊,只有 2% 會拒絕。<span class="cite">S06 p.30</span></li>
+<li>另有 AI 專家擔心 AI 變成 “yes-men”(截圖為 TechCrunch:Hugging Face 首席科學官)。<span class="cite">S06 p.31</span></li>
+<li>投影片的超大型開源模型清單標註「都中國的」、「注意一般人基本上跑不動!」。<span class="cite">S06 p.4</span></li>
+</ul>
+<h3>意識的討論</h3>
+<ul>
+<li>大家擔心心智理論(ToM)在 GPT-3 中出現、Bing 會火大與真人吵架;講者結論「沒有,ChatGPT 沒有意識」。<span class="cite">S06 p.18</span></li>
+<li>引李維倫老師:人類心靈與 ToM 是兩回事,ToM 基於笛卡兒主義的心智理論;ChatGPT 的反應可接近該理論,不代表 ToM 真的契合人類心靈的運作。<span class="cite">S06 p.19</span></li>
+<li>標題為「AI 沒有意識,但還是可能有『人工意識』」;該頁圖上文字為「我罵人、稱讚人等等,都是沒有意識的。」與「甚至自己改程式,自己執行。」,與標題的銜接語意不明,僅照錄、不詮釋(文字層異常,見 S06「文字層異常處」)。<span class="cite">S06 p.20</span></li>
+<li>抄襲頁的氣泡文字「總有一天我們需要放棄,這是不是 LLM 生的。」語意不完整,僅照錄。<span class="cite">S06 p.21</span></li>
+</ul>
+<h3>隱私與使用者責任</h3>
+<ul>
+<li>使用者要為是否侵權、內容文獻是否正確、品質是否符合需求負責。<span class="cite">S06 p.22</span></li>
+<li>即使不拿去訓練,雲端保存的原始對話仍可能因帳號被盜、權限設定或系統漏洞外洩。<span class="cite">S06 p.23</span></li>
+<li>有個資、機密文件內容請不要發問;完全在本機執行、資料不外傳,可避開把對話交給雲端服務的這層風險。<span class="cite">S06 p.24</span></li>
+<li>負責任使用的七點:辨識生成內容的真實性、資料與隱私的尊重、著作權與智慧財產權、偏見與公平性、培養批判性思考能力、避免惡意用途與濫用、永續發展與環境倫理。<span class="cite">S06 p.32</span></li>
+</ul>
+<h2>與其他概念的關係</h2>
+<ul>
+<li>幻覺的完整討論見 <a href="hallucination.html">hallucination</a>。<span class="cite">S06 p.16</span></li>
+<li>本地端執行、system prompt 客製化見 <a href="prompt-and-system-prompt.html">prompt-and-system-prompt</a>。<span class="cite">S06 p.37</span></li>
+<li>多個 AI Agents 交互產生的結構性風險,見 <a href="ai-agent-harness.html">ai-agent-harness</a>。<span class="cite">S06 p.25</span></li>
+<li>「思考」/ CoT 類模型見 <a href="tool-use-and-patterns.html">tool-use-and-patterns</a>(Planning)。</li>
+<li>模型為何會產生這類輸出,見 <a href="next-token-prediction.html">next-token-prediction</a>。</li>
+</ul>
+<h2>來源差異或矛盾</h2>
+<ul>
+<li>無(僅 S06 一份來源)。</li>
+<li>注意:S06 p.20、p.21 為文字層異常頁,本頁僅照錄、不詮釋。<span class="cite">S06 p.20</span><span class="cite">S06 p.21</span></li>
+</ul></main></body></html>

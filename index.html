@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>生成式 AI 入門教學簡報</title>
+<meta name="description" content="用 LLM Wiki 製作的生成式 AI 入門教學簡報:從神經網路、LLM 到 Agent 與工作流程。">
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da;--hl:#eef3ff}
+@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a;--hl:#1b2540}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font:clamp(15px,1.42vw,19px)/1.62 system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:0 16px}
+.slide.on{display:flex}
+.inner{flex:1;overflow:auto;width:100%;max-width:1040px;margin:0 auto;padding:3vh 0 1.5vh}
+.kicker{color:var(--acc);font-weight:600;letter-spacing:.08em;font-size:.8em}
+h2{font-size:clamp(22px,3.2vw,40px);line-height:1.25;margin:.2em 0 .6em}
+.take{background:var(--hl);border-left:4px solid var(--acc);padding:.7em 1em;border-radius:6px;margin-bottom:1em}
+.pts{padding-left:1.1em;margin:0}
+.pts li{margin:.38em 0}
+.cite{display:inline-block;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-left:3px;white-space:nowrap;vertical-align:1px}
+footer{width:100%;max-width:1040px;margin:0 auto;display:flex;align-items:center;color:var(--mut);font-size:13px;height:60px;padding:0 440px 0 0;border-top:1px solid var(--line)}
+footer a{color:var(--acc);margin-right:6px}
+.cover h2{font-size:clamp(28px,5vw,60px)}
+.nav{position:fixed;right:16px;bottom:8px;display:flex;gap:8px;z-index:5}
+.nav button{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;width:44px;height:44px;font-size:18px;cursor:pointer}
+.nav button:hover{border-color:var(--acc)}
+#bar{position:fixed;left:0;top:0;height:3px;background:var(--acc);width:0;z-index:6;transition:width .2s}
+#toc{position:fixed;right:120px;bottom:8px;z-index:5}
+#toc select{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;height:44px;padding:0 8px;width:min(320px,calc(100vw - 150px))}
+@media (max-width:760px){footer{height:112px;align-items:flex-start;padding:10px 0 0}#toc{left:16px;right:auto}#toc select{width:calc(100vw - 150px)}}
+@media print{body{overflow:visible;height:auto}.slide{position:static;display:flex;page-break-after:always;min-height:100vh}.nav,#toc,#bar{display:none}}
+</style></head><body>
+<div id="bar"></div>
+
+<section class="slide cover" id="s1" data-title="生成式 AI 是什麼?從「猜下一個字」到「教 AI 做事」">
+  <div class="inner">
+    <div class="kicker">開場</div>
+    <h2>生成式 AI 是什麼?從「猜下一個字」到「教 AI 做事」</h2>
+    <div class="take"><b>一句話:</b>AI Agent 其實只是「教 AI 做事的方法」——這是講者對「學 AI 好難」這個焦慮的回應。 <span class="cite">S01 p.42</span></div>
+    <ul class="pts"><li><span class="t">這份簡報分三段:① 模型怎麼運作 → ② 怎麼用模型 → ③ 從聊天到做事(Agent 與流程)。</span> </li><li><span class="t">講者說,學 AI 的焦慮之一是「感覺好難」;回應是:AI Agent 其實只是「教 AI 做事的方法」。</span> <span class="cite">S01 p.42</span></li><li><span class="t">課程特色之一是「用原理對抗焦慮」(另一個是「教 AI 用你的方法做事」)。</span> <span class="cite">S01 p.38</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/index.html" target="_blank" rel="noopener">index</a> <a href="wiki-site/ai-agent-harness.html" target="_blank" rel="noopener">ai-agent-harness</a></span></footer>
+</section>
+<section class="slide" id="s2" data-title="AI 其實是一個「呆萌的函數」">
+  <div class="inner">
+    <div class="kicker">① 模型怎麼運作</div>
+    <h2>AI 其實是一個「呆萌的函數」</h2>
+    <div class="take"><b>一句話:</b>AI 模型 = 一台函數學習機 f_θ:你告訴它輸入與輸出長什麼樣子,它學出中間的對應。 <span class="cite">S02 p.3</span></div>
+    <ul class="pts"><li><span class="t">講者把模型比喻成「呆萌型 AI 機器人」(呆一布 DIVE):你要告訴它輸入是什麼、輸出長什麼樣子;它不會分析,沒有意識,不知道自己在做什麼。</span> <span class="cite">S01 p.45</span><span class="cite">S02 p.3</span></li><li><span class="t">例子:野外拍到一隻八哥,輸入是一張照片,輸出其實是三個數字,分別對應土八哥、白尾八哥、家八哥。</span> <span class="cite">S01 p.46</span><span class="cite">S01 p.48</span><span class="cite">S02 p.11</span></li><li><span class="t">輸入與輸出都必須是數字(張量);圖片有 R、G、B 三個通道。</span> <span class="cite">S02 p.9</span><span class="cite">S02 p.10</span></li><li><span class="t">類別用 one-hot encoding 表示:土八哥 [1,0,0]、白尾八哥 [0,1,0]、家八哥 [0,0,1]。</span> <span class="cite">S02 p.12</span></li><li><span class="t">神經網路的神經元把輸入乘上權重、加上偏值,再經過激發函數(如 ReLU、Sigmoid)轉換後送出。</span> <span class="cite">S02 p.34</span><span class="cite">S02 p.35</span><span class="cite">S02 p.36</span><span class="cite">S02 p.38</span></li><li><span class="t">生成式 AI 也是這種呆萌型機器人。</span> <span class="cite">S01 p.49</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/neural-network.html" target="_blank" rel="noopener">neural-network</a></span></footer>
+</section>
+<section class="slide" id="s3" data-title="它怎麼學會?Loss 與梯度下降">
+  <div class="inner">
+    <div class="kicker">① 模型怎麼運作</div>
+    <h2>它怎麼學會?Loss 與梯度下降</h2>
+    <div class="take"><b>一句話:</b>訓練 = 量出「錯多少」(loss),再一步步調整參數讓 loss 變小。 <span class="cite">S02 p.73</span></div>
+    <ul class="pts"><li><span class="t">訓練時會定義 loss function:看神經網路考「考古題」時,答案和正確答案差多少。</span> <span class="cite">S02 p.70</span></li><li><span class="t">訓練就是調整參數 θ,讓 loss 越來越小,目標是找到使 loss 最小的 θ*。</span> <span class="cite">S02 p.73</span><span class="cite">S02 p.74</span></li><li><span class="t">梯度下降像「走」向最小值:靠切線斜率判斷方向;但斜率指的方向其實是(局部)極大值的方向,所以要往相反方向走。</span> <span class="cite">S02 p.87</span></li><li><span class="t">一次走太大會跑過頭,所以步伐乘上一個小數,叫 learning rate。</span> <span class="cite">S02 p.91</span><span class="cite">S02 p.92</span></li><li><span class="t">不管模型怎麼架、選什麼 loss,都可以用 gradient descent 訓練。</span> <span class="cite">S02 p.104</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/loss-and-gradient-descent.html" target="_blank" rel="noopener">loss-and-gradient-descent</a></span></footer>
+</section>
+<section class="slide" id="s4" data-title="為什麼 AI 每次回答都不一樣?">
+  <div class="inner">
+    <div class="kicker">① 模型怎麼運作</div>
+    <h2>為什麼 AI 每次回答都不一樣?</h2>
+    <div class="take"><b>一句話:</b>AI 每次答案不同,是因為它「依機率抽」答案;語言模型就是依機率抽字。 <span class="cite">S03 p.94</span><span class="cite">S03 p.96</span></div>
+    <ul class="pts"><li><span class="t">八哥辨識若永遠選最高分(土八哥 0.6),同樣輸入就永遠同樣輸出;但也可以依機率抽:60% 土八哥、30% 白尾八哥、10% 家八哥。</span> <span class="cite">S03 p.94</span></li><li><span class="t">八哥辨識依機率抽好像沒道理,但若是「咖啡豆處理法推薦 AI」,依機率抽就比較有道理。</span> <span class="cite">S03 p.95</span></li><li><span class="t">語言模型就是用機率抽字:看前面的字,猜下一個字。</span> <span class="cite">S03 p.96</span></li><li><span class="t">創作型 AI(如 GAN)還有另一個隨機來源:輸入一個 latent tensor z(「天馬行空的想法」),隨機抽 z 就是隨機性的來源。</span> <span class="cite">S03 p.6</span><span class="cite">S03 p.7</span><span class="cite">S03 p.9</span></li><li><span class="t">temperature 控制隨機程度:大於 1 更隨機、小於 1 更固定;實務上常設 τ=1,想更隨機也只設到 1.1。</span> <span class="cite">S04 p.56</span><span class="cite">S04 p.58</span></li><li><span class="t">top-k:只有機率前 k 名(如 50)的字可被選。</span> <span class="cite">S04 p.60</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/softmax-and-sampling.html" target="_blank" rel="noopener">softmax-and-sampling</a></span></footer>
+</section>
+<section class="slide" id="s5" data-title="LLM 就是在「猜下一個字」">
+  <div class="inner">
+    <div class="kicker">① 模型怎麼運作</div>
+    <h2>LLM 就是在「猜下一個字」</h2>
+    <div class="take"><b>一句話:</b>LLM 的核心是一個函數:看到前面的字,輸出下一個字;被訓練成「很會接話」。 <span class="cite">S04 p.8</span></div>
+    <ul class="pts"><li><span class="t">訓練資料隨手可得:任何句子都能拆成「輸入—答案」配對。例如「炎龍老師很帥」拆成 (炎,龍)、(龍,老)、(老,師)、(師,很)、(很,帥)。</span> <span class="cite">S04 p.9</span></li><li><span class="t">只看一個字會出問題:用「今天天氣很好。」訓練,「天」會同時有「天」和「氣」兩個答案,就不是函數。</span> <span class="cite">S04 p.10</span></li><li><span class="t">所以模型要「有記憶」:除了目前的字,還要把前面的字融合成一個記憶向量一起輸入。</span> <span class="cite">S04 p.11</span></li><li><span class="t">規模:GPT-2 約 15 億參數,GPT-3 約 1,750 億參數。</span> <span class="cite">S04 p.42</span><span class="cite">S04 p.43</span></li><li><span class="t">現代 LLM「大概什麼都讀過了」,所以什麼話都接得上。</span> <span class="cite">S04 p.45</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/next-token-prediction.html" target="_blank" rel="noopener">next-token-prediction</a></span></footer>
+</section>
+<section class="slide" id="s6" data-title="它怎麼「看」前文?注意力與 Transformer">
+  <div class="inner">
+    <div class="kicker">① 模型怎麼運作</div>
+    <h2>它怎麼「看」前文?注意力與 Transformer</h2>
+    <div class="take"><b>一句話:</b>2017 年 Google 提出 Transformer(“Attention is All you Need”),主要想取代 RNN。 <span class="cite">S05 p.16</span></div>
+    <ul class="pts"><li><span class="t">2017 年 Google 發表 “Attention is All you Need”,主要想取代 RNN。</span> <span class="cite">S05 p.16</span></li><li><span class="t">直覺比喻:q 是「問題」,k、v 是「先備知識」,輸出 h 是「適合這個問題的結果」。</span> <span class="cite">S05 p.17</span></li><li><span class="t">Transformer 一次處理整串字,所以字的先後順序沒被考慮;要另外把「位置」加進去(position encoding)。</span> <span class="cite">S05 p.42</span></li><li><span class="t">位置編碼的比喻:十進位數字越高位數變化越慢;sin/cos 成對,像時鐘上的指針,低位元的時鐘轉得快、高位元的轉得慢。</span> <span class="cite">S05 p.43</span><span class="cite">S05 p.49</span></li><li><span class="t">位置向量 p_t 與詞向量 x_t 同維度,直接相加。</span> <span class="cite">S05 p.45</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/attention-transformer.html" target="_blank" rel="noopener">attention-transformer</a></span></footer>
+</section>
+<section class="slide" id="s7" data-title="「幻覺」不是 bug,是特性">
+  <div class="inner">
+    <div class="kicker">① 模型怎麼運作</div>
+    <h2>「幻覺」不是 bug,是特性</h2>
+    <div class="take"><b>一句話:</b>LLM 是「作夢的機器」;你要負責讀它寫了什麼。 <span class="cite">S06 p.16</span><span class="cite">S06 p.33</span></div>
+    <ul class="pts"><li><span class="t">引用 Karpathy:LLM 沒有「幻覺問題」;幻覺不是錯誤,而是 LLM 最偉大的特點,LLM 是「作夢的機器」。</span> <span class="cite">S06 p.16</span></li><li><span class="t">比喻:搜尋引擎是 0% 的夢境(不會創造),LLM 則是作夢的機器。人們真正的意思是「不希望 LLM 助理發生幻覺」。</span> <span class="cite">S06 p.16</span></li><li><span class="t">最重要的使用技巧:一定要讀它寫了什麼。AI 生成的都是「幻覺」,要用自己的專業判斷合不合適;沒有寫錯不代表寫對了我們的意思。</span> <span class="cite">S06 p.33</span></li><li><span class="t">人的幻覺也許更嚴重,例如「AI 會的,就以為自己也會了」。</span> <span class="cite">S06 p.17</span></li><li><span class="t">態度:不要覺得 AI 說的一定對,也不要笑它不知道你知道的東西,你們是夥伴。</span> <span class="cite">S06 p.47</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/hallucination.html" target="_blank" rel="noopener">hallucination</a></span></footer>
+</section>
+<section class="slide" id="s8" data-title="怎麼跟它講話:Prompt 與人設">
+  <div class="inner">
+    <div class="kicker">② 怎麼用模型</div>
+    <h2>怎麼跟它講話:Prompt 與人設</h2>
+    <div class="take"><b>一句話:</b>Prompt 只有兩個重點:正確的資訊 + 清楚的指引。 <span class="cite">S06 p.35</span></div>
+    <ul class="pts"><li><span class="t">寫好 prompt 的兩個要素:資訊(提供需要的正確資訊)與清楚的指引(用什麼格式、風格回答)。</span> <span class="cite">S06 p.35</span></li><li><span class="t">對話其實有三種角色:system 是 ChatGPT 的「人設」、user 是使用者輸入、assistant 是回應。</span> <span class="cite">S06 p.37</span></li><li><span class="t">人設範例「員瑛式思考產生器」:請用員瑛式思考(什麼都正向思維),以第一人稱、社群貼文口吻說為什麼這是超幸運的事,並以「完全是 Lucky Vicky 呀!」結尾。</span> <span class="cite">S06 p.41</span></li><li><span class="t">不會寫也不用擔心:可以和 AI 討論、請它收集資訊;最後請 AI 用 Markdown 整理成完整的 system prompt,並記得自己修改。</span> <span class="cite">S06 p.46</span><span class="cite">S06 p.48</span></li><li><span class="t">一定要讀 AI 生成的東西;例:書名在台灣應為《超譯佛經》《正是時候讀叔本華》,AI 給的不一定對。</span> <span class="cite">S06 p.47</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/prompt-and-system-prompt.html" target="_blank" rel="noopener">prompt-and-system-prompt</a></span></footer>
+</section>
+<section class="slide" id="s9" data-title="讓 AI 看懂你的資料:RAG 與記憶">
+  <div class="inner">
+    <div class="kicker">② 怎麼用模型</div>
+    <h2>讓 AI 看懂你的資料:RAG 與記憶</h2>
+    <div class="take"><b>一句話:</b>RAG = 先找出相關資料,再交給 LLM 回答;是降低錯誤的一個方法。 <span class="cite">S07 p.3</span></div>
+    <ul class="pts"><li><span class="t">RAG(Retrieval-Augmented Generation)被定位為「一個降低錯誤的方法」;媒體標題把它比喻成大型語言模型的「小抄」。</span> <span class="cite">S07 p.3</span><span class="cite">S07 p.4</span></li><li><span class="t">資料可以自己貼進 prompt,但「不能叫電腦找嗎?」RAG 就是讓電腦去找。</span> <span class="cite">S07 p.5</span></li><li><span class="t">關鍵是 embedding 模型:把一段文字轉成向量,是這段文字的特徵代表向量。</span> <span class="cite">S07 p.6</span></li><li><span class="t">流程:文件變成向量 → 問題也變成向量 → 找最接近的放進 prompt → 結果通常不只一筆,可能要重新排序(Reranking)→ 可再補上下文。</span> <span class="cite">S07 p.18</span><span class="cite">S07 p.19</span><span class="cite">S07 p.20</span><span class="cite">S07 p.21</span><span class="cite">S07 p.22</span></li><li><span class="t">短期記憶就是這次對話,太長前面也會忘;長期記憶的一個做法是把過去對話做成向量資料庫(RAG)。</span> <span class="cite">S07 p.32</span><span class="cite">S07 p.33</span></li><li><span class="t">另一條路:CAG,用 KV-Cache 技術把資訊都塞給 LLM(上下文越來越長)。</span> <span class="cite">S07 p.26</span><span class="cite">S07 p.27</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/rag.html" target="_blank" rel="noopener">rag</a> <a href="wiki-site/memory-and-context.html" target="_blank" rel="noopener">memory-and-context</a></span></footer>
+</section>
+<section class="slide" id="s10" data-title="從聊天到做事:AI Agent = Model + Harness">
+  <div class="inner">
+    <div class="kicker">③ 從聊天到做事</div>
+    <h2>從聊天到做事:AI Agent = Model + Harness</h2>
+    <div class="take"><b>一句話:</b>AI Agent = AI Model + Harness:模型負責「想」,Harness 負責「做」。 <span class="cite">S08 p.4</span><span class="cite">S09 p.14</span></div>
+    <ul class="pts"><li><span class="t">LLM 本身只會生成文字:不會打開你的資料夾、不會改檔案、不能自己上網查最新資料。</span> <span class="cite">S09 p.13</span></li><li><span class="t">Model 是大腦,負責想(理解、規劃、判斷、生成);Harness 是工作裝備,負責做,把模型說的「我要開這個檔案」真的執行,再把結果回報給模型。</span> <span class="cite">S09 p.14</span></li><li><span class="t">純聊天是「AI 出一張嘴,事情都你在做」;Agentic 是「你出一張嘴,AI 來完成」。</span> <span class="cite">S09 p.8</span><span class="cite">S09 p.10</span></li><li><span class="t">Harness 的六個組成:工作環境、工具、連接器 MCP、技能 Skills、規則檔(CLAUDE.md / AGENTS.md)、排程。</span> <span class="cite">S09 p.16</span></li><li><span class="t">好的交辦要說清楚三件事:要什麼成品、有什麼限制、怎麼算做完;重點是不要讓 AI 猜。</span> <span class="cite">S09 p.18</span></li><li><span class="t">「員工手冊」:在專案資料夾裡寫一本手冊(CLAUDE.md / AGENTS.md),讓 AI 照著做。</span> <span class="cite">S09 p.22</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/ai-agent-harness.html" target="_blank" rel="noopener">ai-agent-harness</a></span></footer>
+</section>
+<section class="slide" id="s11" data-title="Agent 的設計模式與 Tool Use">
+  <div class="inner">
+    <div class="kicker">③ 從聊天到做事</div>
+    <h2>Agent 的設計模式與 Tool Use</h2>
+    <div class="take"><b>一句話:</b>LLM 不太會做的事(精確計算、實際數據、網路搜尋),就不要再逼它了——這就是【Tool Use】工具呼叫的出發點。 <span class="cite">S08 p.23</span></div>
+    <ul class="pts"><li><span class="t">投影片列出 AI Agents 的四個設計模式(標示吳恩達):Reflection、Tool Use、Planning、Multiagent Collaboration。</span> <span class="cite">S08 p.18</span></li><li><span class="t">Reflection:第一個 LLM 產生初稿,第二個 LLM 評估並給改善建議,再修改,可重覆數次。</span> <span class="cite">S08 p.19</span><span class="cite">S08 p.20</span><span class="cite">S08 p.21</span></li><li><span class="t">Tool Use 例子(飲料店):顧客說「我想訂 20 杯麥茶」;LLM 參與兩個階段——先說出要呼叫的工具 quote_order(&quot;麥茶&quot;, 20),工具回傳 JSON(單價 30、總計 600),再依這些數據回答「沒問題!20 杯麥茶一共 600 元」。</span> <span class="cite">S08 p.24</span><span class="cite">S08 p.26</span><span class="cite">S08 p.27</span><span class="cite">S08 p.29</span></li><li><span class="t">MCP(Anthropic)標準化 LLM 與外部工具、資料來源的互動;A2A(Google)定義代理之間如何交換資訊與協作。</span> <span class="cite">S08 p.31</span></li><li><span class="t">Vibe Coding 適合週末小專案、給自己用的小工具;不適合要正式上線的程式。</span> <span class="cite">S08 p.50</span><span class="cite">S08 p.51</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/tool-use-and-patterns.html" target="_blank" rel="noopener">tool-use-and-patterns</a></span></footer>
+</section>
+<section class="slide" id="s12" data-title="把工作拆成流程:Loop 與 Graph">
+  <div class="inner">
+    <div class="kicker">③ 從聊天到做事</div>
+    <h2>把工作拆成流程:Loop 與 Graph</h2>
+    <div class="take"><b>一句話:</b>先用 Prompt;一直重複同樣的修正就升級成 Loop;各階段標準不同才拆成 Graph。 <span class="cite">S10 p.27</span></div>
+    <ul class="pts"><li><span class="t">做出一版、發現問題、再來一次……「這就是 loop」;只是你自己就是那個 loop。</span> <span class="cite">S10 p.5</span><span class="cite">S10 p.40</span></li><li><span class="t">Loop:把「你一直盯著修」寫成會自己執行的規格,寫一次、跑很多輪。要寫清楚五件事:目標、限制、完成標準、停止條件、觸發。</span> <span class="cite">S10 p.20</span><span class="cite">S10 p.21</span></li><li><span class="t">檢查分兩種:程式檢查(測試過了沒、每頁有沒有出處)與 AI 審查(內容忠於來源嗎);不要叫 AI 審自己的作品,AI 審查要開新對話,只給成品和來源。</span> <span class="cite">S10 p.22</span></li><li><span class="t">Loop 要有剎車:最多改 3 輪、資料不足就停、注意 token 成本。</span> <span class="cite">S10 p.23</span></li><li><span class="t">Graph:流程由人事先畫好,不能跳關,卡住時退回特定一關(像申請流程:系辦 → 院 → 教務處)。</span> <span class="cite">S10 p.24</span></li><li><span class="t">好的 graph 是大圈很少轉、小圈轉得很快;錯誤要在離源頭最近的地方抓到;常常轉大圈,代表檢查該往前移。</span> <span class="cite">S10 p.26</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/loop.html" target="_blank" rel="noopener">loop</a> <a href="wiki-site/graph-workflow.html" target="_blank" rel="noopener">graph-workflow</a></span></footer>
+</section>
+<section class="slide" id="s13" data-title="風險與自保:該注意什麼">
+  <div class="inner">
+    <div class="kicker">③ 從聊天到做事</div>
+    <h2>風險與自保:該注意什麼</h2>
+    <div class="take"><b>一句話:</b>自保:有個資、機密請不要發問;內容正確、品質與侵權由使用者負責。 <span class="cite">S06 p.22</span><span class="cite">S06 p.24</span></div>
+    <ul class="pts"><li><span class="t">AI 的四個風險:濫用(人類有惡意)、錯誤對齊(AI 與人類價值不一致)、錯誤(世界複雜出了沒想到的 bug)、結構性風險(多個 AI Agents 與人類交互)。</span> <span class="cite">S06 p.25</span></li><li><span class="t">使用者要為侵權、內容與文獻是否正確、品質是否符合需求負責。</span> <span class="cite">S06 p.22</span></li><li><span class="t">即使不拿去訓練,雲端保存的對話仍可能因帳號被盜、權限設定或系統漏洞外洩;有個資、機密請不要發問,完全在本機執行可避開這層風險。</span> <span class="cite">S06 p.23</span><span class="cite">S06 p.24</span></li><li><span class="t">更要小心不一定故意做的:DeepSeek 沒公開訓練資料,簡體中文比例可預期更高,會潛移默化影響常使用的人。</span> <span class="cite">S06 p.29</span></li><li><span class="t">「推理能力強」也是危機:加上思考的模型遇到 H-CoT(劫持思維鏈)攻擊,只有 2% 會拒絕回應(對照:原本 98% 會拒絕)。</span> <span class="cite">S06 p.30</span></li><li><span class="t">負責任使用七點:辨識生成內容的真實性、資料與隱私、著作權、偏見與公平性、批判性思考、避免惡意用途、永續與環境倫理。</span> <span class="cite">S06 p.32</span></li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/ai-risks.html" target="_blank" rel="noopener">ai-risks</a></span></footer>
+</section>
+<section class="slide" id="s14" data-title="回顧:自己的知識庫 —— LLM Wiki">
+  <div class="inner">
+    <div class="kicker">回顧</div>
+    <h2>回顧:自己的知識庫 —— LLM Wiki</h2>
+    <div class="take"><b>一句話:</b>你找的資料放進 raw,由 AI 整理、維護成 wiki。 <span class="cite">S09 p.33</span><span class="cite">S07 p.40</span></div>
+    <ul class="pts"><li><span class="t">Karpathy 的做法:你找的資料放進 raw → 教 AI 產生 wiki 檔(含 index.md),打造自己的 Wikipedia。</span> <span class="cite">S09 p.33</span></li><li><span class="t">Wiki 的資料都由 LLM 撰寫並維護,作者很少直接動手修改。</span> <span class="cite">S07 p.40</span></li><li><span class="t">例子 Farzapedia:由多年日記整理成的個人化 wikipedia,畫面顯示 417 articles across 41 categories。</span> <span class="cite">S09 p.35</span><span class="cite">S07 p.48</span></li><li><span class="t">「先討論,後生成」:先讓 AI 訪談(一次一題、約 8-10 題,先不建任何檔案),整理需求摘要確認後,才生成 AGENTS.md 與資料夾。</span> <span class="cite">S10 p.29</span><span class="cite">S10 p.31</span></li><li><span class="t">(回顧)模型 = 呆萌函數 + 猜下一個字;使用 = 好 prompt + RAG;Agent = 模型 + Harness,再用 Loop / Graph 設計流程。</span> </li><li><span class="t">(說明)這份簡報本身就是這樣做出來的:10 份投影片 → LLM Wiki → 每頁只引用 wiki 內有出處的內容;流程見 README。</span> </li></ul>
+  </div>
+  <footer><span>依據 wiki:<a href="wiki-site/llm-wiki.html" target="_blank" rel="noopener">llm-wiki</a> <a href="wiki-site/index.html" target="_blank" rel="noopener">index</a></span></footer>
+</section>
+<div id="toc"><select id="sel" aria-label="跳到某一頁"></select></div>
+<div class="nav"><button id="prev" aria-label="上一頁">←</button><button id="next" aria-label="下一頁">→</button></div>
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide')),i=0,sel=document.getElementById('sel');
+  slides.forEach(function(s,k){var o=document.createElement('option');o.value=k;o.textContent=(k+1)+'. '+s.dataset.title;sel.appendChild(o)});
+  function go(k){i=Math.max(0,Math.min(slides.length-1,k));slides.forEach(function(s,j){s.classList.toggle('on',j===i)});
+    sel.value=i;document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+    slides[i].querySelector('.inner').scrollTop=0;try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+  document.getElementById('prev').onclick=function(){go(i-1)};
+  document.getElementById('next').onclick=function(){go(i+1)};
+  sel.onchange=function(){go(+sel.value)};
+  document.addEventListener('keydown',function(ev){
+    if(ev.target===sel)return;
+    if(['ArrowRight','PageDown',' '].indexOf(ev.key)>-1){ev.preventDefault();go(i+1)}
+    if(['ArrowLeft','PageUp'].indexOf(ev.key)>-1){ev.preventDefault();go(i-1)}
+    if(ev.key==='Home')go(0);if(ev.key==='End')go(slides.length-1)});
+  var tx=0;document.addEventListener('touchstart',function(ev){tx=ev.touches[0].clientX});
+  document.addEventListener('touchend',function(ev){var d=ev.changedTouches[0].clientX-tx;if(Math.abs(d)>60)go(i+(d<0?1:-1))});
+  var h=parseInt(location.hash.slice(1),10);go(h>0?h-1:0);
+})();
+</script></body></html>

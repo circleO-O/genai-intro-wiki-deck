@@ -1,0 +1,55 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Softmax 與抽樣(AI 為什麼每次答案不同)</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da}
+@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC",sans-serif}
+main{max-width:820px;margin:0 auto;padding:24px 16px 80px}
+a{color:var(--acc)}h1{font-size:1.7rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
+.cite{font:12px ui-monospace,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+table{border-collapse:collapse;width:100%}td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+nav{font-size:14px;color:var(--mut);margin-bottom:12px}
+</style></head><body><main>
+<nav><a href="index.html">← wiki 首頁</a> · <a href="../index.html">← 簡報</a></nav>
+<h1>Softmax 與抽樣(AI 為什麼每次答案不同)</h1>
+<h2>一句話定義</h2>
+<p>模型先把每個可能的答案(字)評分,經 softmax 轉成機率,再依某種策略(依機率抽樣、temperature、top-k、top-p)抽出一個,所以同樣的輸入可以有不同輸出。<span class="cite">S04 p.64</span><span class="cite">S03 p.96</span></p>
+<h2>白話解釋</h2>
+<ul>
+<li>若八哥辨識永遠選最高分(0.6 的土八哥),同樣輸入就永遠同樣輸出;但也可以依機率抽:60% 土八哥、30% 白尾八哥、10% 家八哥。<span class="cite">S03 p.93</span><span class="cite">S03 p.94</span></li>
+<li>對八哥辨識依機率抽好像沒道理,但若是咖啡豆處理法推薦 AI,依機率抽就比較有道理。<span class="cite">S03 p.95</span></li>
+<li>語言模型就是用機率抽字:看前面的字,猜下一個字(機率來自 softmax)。<span class="cite">S03 p.96</span></li>
+<li>創作型 AI 的另一個隨機來源:同樣輸入有很多種輸出(一對多)不是函數,硬訓練只會得到輸出的平均;所以改成輸入一個 latent tensor z(「天馬行空的想法」),在 GAN 中隨機抽 z 就是隨機性的來源。<span class="cite">S03 p.6</span><span class="cite">S03 p.7</span><span class="cite">S03 p.9</span><span class="cite">S03 p.92</span></li>
+<li>語言模型本身不知道自己在做什麼,只覺得下一個字放什麼順就放什麼。<span class="cite">S04 p.19</span></li>
+</ul>
+<h2>重點</h2>
+<h3>Softmax</h3>
+<ul>
+<li>每個可能的字先給編號,模型對每個字評分,經指數轉換(exp)再算佔比;圖例 1.40→30%、1.71→40% 等(各數值對應哪個字未核對)。<span class="cite">S04 p.16</span><span class="cite">S04 p.17</span><span class="cite">S04 p.18</span></li>
+<li>流程:數字先做指數轉換得 e^a、e^b、e^c,再除以總和,使保持大小關係且總和為 1;先轉換是因為輸出可能為負。<span class="cite">S02 p.15</span><span class="cite">S02 p.16</span><span class="cite">S02 p.17</span></li>
+<li>softmax 具「贏者通吃」特性,關鍵在指數轉換:a=4.3、b=3.4、c=0.2 轉為 0.7、0.29、0.01。<span class="cite">S04 p.54</span><span class="cite">S04 p.55</span></li>
+<li>輸出向量的維度等於「可能的字數」。<span class="cite">S04 p.49</span></li>
+</ul>
+<h3>抽樣策略</h3>
+<ul>
+<li>最重要的是依機率抽樣:a 0.7、b 0.29、c 0.01,則 70% / 29% / 1% 選到。<span class="cite">S04 p.53</span></li>
+<li>Temperature τ:a&#x27; = e^{a/τ}。τ&gt;1 機率拉近(更隨機),τ&lt;1 機率拉開(更固定)。例(logit a=4.3、b=3.4):τ=1 為 0.7/0.29;τ=2 為 0.57/0.36;τ=0.5 為 0.86/0.14。<span class="cite">S04 p.56</span><span class="cite">S04 p.57</span></li>
+<li>實務上 LLM 輸出分數常接近 0,exp 接近線性,贏者通吃不明顯;常設 τ=1,要更隨機也只設到 1.1,要一致則設較小。<span class="cite">S04 p.58</span></li>
+<li>不管如何,機率低的字仍可能被選到,於是時常不知在亂說什麼。<span class="cite">S04 p.59</span></li>
+<li>top-k:只有前 k 名(如 50)可被選;缺點是有時可能的字非常少(例:「政大應數系教我們生成式 AI 的老師是蔡炎」下一字必須是「龍」)。<span class="cite">S04 p.60</span></li>
+<li>top-p(nucleus sampling):從機率最高的字累加,總和大於 p(如 0.9)時只選前 N 個字;並做 redistribution p&#x27;_k = p_k / P 使總和為 1。<span class="cite">S04 p.61</span><span class="cite">S04 p.62</span></li>
+<li>top-p 出自 ICLR 2020 論文(Holtzman 等),出現得很晚。<span class="cite">S04 p.63</span></li>
+</ul>
+<h3>與分類、生成式的關係</h3>
+<ul>
+<li>常見分法有鑑別式 AI 與生成式 AI;有人說生成式有幻覺所以有時要用鑑別式,但講者認為原理上它們是一樣的。<span class="cite">S03 p.97</span><span class="cite">S03 p.98</span></li>
+</ul>
+<h2>與其他概念的關係</h2>
+<ul>
+<li>輸出層的 softmax 見 <a href="neural-network.html">neural-network</a>;softmax 輸出用 Cross Entropy 評量見 <a href="loss-and-gradient-descent.html">loss-and-gradient-descent</a>。</li>
+<li>逐字抽樣即 <a href="next-token-prediction.html">next-token-prediction</a>;抽到低機率字與 <a href="hallucination.html">hallucination</a> 有關(S04 稱幻覺為 LLM 的特點而非單純錯誤)。<span class="cite">S04 p.39</span></li>
+<li>Transformer 的 attention 也用到 softmax:見 <a href="attention-transformer.html">attention-transformer</a>。<span class="cite">S04 p.29</span></li>
+</ul>
+<h2>來源差異或矛盾</h2>
+<p>無矛盾。S03 說明「為什麼會有隨機性」(抽 z、依機率抽),S04 補充「怎麼抽」(temperature、top-k、top-p)。<span class="cite">S03 p.92</span><span class="cite">S04 p.52</span> 兩處的範例機率不同(S02 的 0.61/0.28/0.11、S03 的 0.6/0.3/0.1、S04 的 0.7/0.29/0.01)僅是各自的舉例。<span class="cite">S02 p.15</span><span class="cite">S03 p.94</span><span class="cite">S04 p.53</span></p></main></body></html>

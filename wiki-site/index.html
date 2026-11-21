@@ -1,0 +1,61 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>LLM Wiki 首頁</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da}
+@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC",sans-serif}
+main{max-width:820px;margin:0 auto;padding:24px 16px 80px}
+a{color:var(--acc)}h1{font-size:1.7rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
+.cite{font:12px ui-monospace,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+table{border-collapse:collapse;width:100%}td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+nav{font-size:14px;color:var(--mut);margin-bottom:12px}
+</style></head><body><main>
+<nav><a href="index.html">← wiki 首頁</a> · <a href="../index.html">← 簡報</a></nav>
+<h1>Index:生成式 AI 入門 LLM Wiki</h1>
+<p>主題:生成式 AI 入門,從神經網路、LLM 到 Agent 與工作流程。</p>
+<p>來源:10 份課程投影片 PDF(<code>../raw/</code>)。共 10 個 source 頁、15 個 concept 頁。</p>
+<h2>Sources(每份 PDF 一頁)</h2>
+<table>
+<tr><td>頁面</td><td>內容</td></tr>
+<tr><td><a href="01-anxiety-free-ai-learning.html">01</a></td><td>如何不焦慮地學 AI:三種焦慮、呆萌型 AI、AI Agent 是教 AI 做事的方法、Colab 入門</td></tr>
+<tr><td><a href="02-neural-network-function-learner.html">02</a></td><td>神經網路與函數學習機:one-hot/softmax、神經元、loss、梯度下降、MNIST 實作</td></tr>
+<tr><td><a href="03-why-ai-differs-each-time.html">03</a></td><td>AI 為什麼每次都不一樣:潛在向量 z、GAN、熵/交叉熵/KL、依機率抽樣</td></tr>
+<tr><td><a href="04-llm-next-token-prediction.html">04</a></td><td>LLM 猜下一個字:attention、temperature/top-k/top-p、幻覺、embedding、prompt</td></tr>
+<tr><td><a href="05-attention-transformer-vibe-coding.html">05</a></td><td>RNN → QKV attention → Transformer、位置編碼、Vibe Coding 作業</td></tr>
+<tr><td><a href="06-build-your-own-chatbot.html">06</a></td><td>打造對話機器人:本地/雲端模型、VRAM、四種 AI 風險、system prompt、AISuite</td></tr>
+<tr><td><a href="07-rag-memory-llm-wiki.html">07</a></td><td>RAG、embedding、chunking、reranking、記憶與 LLM Wiki</td></tr>
+<tr><td><a href="08-teaching-ai-agents.html">08</a></td><td>AI Agent = Model + Harness、四種設計模式、tool use、MCP/A2A</td></tr>
+<tr><td><a href="09-boss-agentic-work.html">09</a></td><td>換你當老闆:Chat → Agentic、harness 六部件、好的委派、專案資料夾與員工手冊</td></tr>
+<tr><td><a href="10-loop-graph-workflow.html">10</a></td><td>Loop、Graph、程式檢查 vs AI 審查、Workflow Prototype</td></tr>
+</table>
+<h2>Concepts(跨來源整合)</h2>
+<p><b>模型怎麼運作</b></p>
+<ul>
+<li><a href="neural-network.html">neural-network</a> — 神經網路是函數學習機(01, 02)</li>
+<li><a href="loss-and-gradient-descent.html">loss-and-gradient-descent</a> — 怎麼訓練:loss 與梯度下降(02, 03)</li>
+<li><a href="softmax-and-sampling.html">softmax-and-sampling</a> — 為什麼每次答案不一樣(03, 04)</li>
+<li><a href="next-token-prediction.html">next-token-prediction</a> — LLM 就是猜下一個字(04, 05)</li>
+<li><a href="attention-transformer.html">attention-transformer</a> — 注意力與 Transformer(04, 05)</li>
+<li><a href="hallucination.html">hallucination</a> — 幻覺是特性(04, 06)</li>
+</ul>
+<p><b>怎麼用模型</b></p>
+<ul>
+<li><a href="prompt-and-system-prompt.html">prompt-and-system-prompt</a> — 提示詞與人設(04, 06)</li>
+<li><a href="rag.html">rag</a> — 檢索增強生成(07, 08)</li>
+<li><a href="memory-and-context.html">memory-and-context</a> — 記憶與上下文(07, 05, 08)</li>
+<li><a href="ai-risks.html">ai-risks</a> — 四種 AI 風險(06)</li>
+</ul>
+<p><b>Agent 與工作流程</b></p>
+<ul>
+<li><a href="ai-agent-harness.html">ai-agent-harness</a> — AI Agent = Model + Harness(01, 08, 09)</li>
+<li><a href="tool-use-and-patterns.html">tool-use-and-patterns</a> — 四種設計模式與 tool use(08)</li>
+<li><a href="loop.html">loop</a> — 迴圈與煞車(10)</li>
+<li><a href="graph-workflow.html">graph-workflow</a> — 流程預先畫好的 graph(10, 09)</li>
+<li><a href="llm-wiki.html">llm-wiki</a> — LLM Wiki:raw → wiki(07, 09, 10, 01)</li>
+</ul>
+<h2>已知限制</h2>
+<ul>
+<li>投影片文字層缺字,各 source 頁的「文字層異常處」列出未用圖片核對的頁面;概念頁以「未核對」標記。</li>
+<li>投影片本身有筆誤與未定義的名詞,見 <code>log.md</code> 的 note 條目。</li>
+</ul></main></body></html>

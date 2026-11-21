@@ -1,0 +1,189 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>03 AI 為什麼每次都不一樣?</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da}
+@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC",sans-serif}
+main{max-width:820px;margin:0 auto;padding:24px 16px 80px}
+a{color:var(--acc)}h1{font-size:1.7rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
+.cite{font:12px ui-monospace,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+table{border-collapse:collapse;width:100%}td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
+nav{font-size:14px;color:var(--mut);margin-bottom:12px}
+</style></head><body><main>
+<nav><a href="index.html">← wiki 首頁</a> · <a href="../index.html">← 簡報</a></nav>
+<h1>03 AI 為什麼每次都不一樣?</h1>
+<h2>主題</h2>
+<p>創作型(生成式)AI 與「分類式」AI 的差別:同樣的輸入為什麼可以有不同輸出。講義從「一對多不是函數」的困境出發,引入 latent tensor(潛張量)與隨機抽樣的想法,再以 GAN(生成對抗網路)及其後續(WGAN、Progressive GAN、StyleGAN、pix2pix、CycleGAN)說明早期的解法;中段補上 Cross Entropy、資訊量、Entropy、KL 散度;最後回到「隨機性從哪裡來」:GAN 是一開始隨機抽 latent z,分類模型與語言模型則是依 softmax 機率抽樣。結尾為作業「設計你自己的呆萌型 AI 機器人」與 AI Canvas。 <span class="cite">S03 p.2-101</span></p>
+<h2>章節脈絡</h2>
+<ul>
+<li>p.2-10:創作型 AI 很難做嗎?(輸入輸出設計、一對多問題、latent tensor 的概念)</li>
+<li>p.11-33:GAN 曾經是生成式 AI 的希望(生成器與鑑別器、GAN 的 loss、學習過程、WGAN 與 collapse)</li>
+<li>p.34-58:GAN 的高光時刻(Progressive GAN、StyleGAN、pix2pix、CycleGAN,以及「直到出現 diffusion models」)</li>
+<li>p.59-90:學 AI 一定要弄懂的 Cross Entropy(MSE 的問題、資訊量、Entropy、Cross Entropy、KL 散度、soft target 與蒸餾)</li>
+<li>p.91-98:隨機性怎麼出來的?(GAN 的隨機 z、依機率抽樣、語言模型抽字、鑑別式 vs 生成式)</li>
+<li>p.99-101:作業與 AI Canvas</li>
+<li>(p.1、p.102 為封面/結尾頁,無內容)</li>
+</ul>
+<h2>重點</h2>
+<h3>創作型 AI 的輸入輸出設計</h3>
+<ul>
+<li>現代 AI 要設計的是「呆萌型 AI 機器人」,本質是函數學習機 fθ:知道輸入是什麼、輸出長什麼樣子。 <span class="cite">S03 p.3</span></li>
+<li>創作型 AI 的難點:輸入要放什麼?直覺會想「輸入『一個可愛的女孩』、輸出一張圖」。 <span class="cite">S03 p.4-5</span></li>
+<li>但同樣的輸入有很多種不同輸出的可能(同一句話可畫出不同的女孩)。 <span class="cite">S03 p.6</span></li>
+<li>這不是函數(一對多)。硬是要訓練,同樣的輸入會得到「輸出的平均」(多張圖相加除以 N)。 <span class="cite">S03 p.7</span></li>
+<li>平均之後很可能四不像;就算運氣好可以接受,也不是創作所要的。 <span class="cite">S03 p.8</span></li>
+<li>創作者機器人的設計:輸入一個 latent tensor z(「天馬行空的想法」),輸出創作作品。 <span class="cite">S03 p.9</span></li>
+<li>Latent Tensor 就是某個數據的特徵表現 Tensor。z 的來源有兩種可能:算得出來的表徵張量,或隨機產生;「這都是有可能的,但怎麼做呢?」 <span class="cite">S03 p.10</span></li>
+</ul>
+<h3>GAN:歷史地位</h3>
+<ul>
+<li>GAN 曾經是生成式 AI 的希望。 <span class="cite">S03 p.11</span></li>
+<li>Yann LeCun(2016)認為 adversarial training(GAN)是深度學習近年最重要的發展,「最有潛力的 model」。 <span class="cite">S03 p.12</span></li>
+<li>原創者 Ian Goodfellow;他和博士時期兩位老師 Yoshua Bengio、Aaron Courville 合寫了號稱 Deep Learning 聖經的書。 <span class="cite">S03 p.13</span></li>
+<li>原始論文:Generative Adversarial Networks,Ian Goodfellow 等,NIPS 2014。 <span class="cite">S03 p.14</span></li>
+<li>附有 Goodfellow 的 GAN 教學影片(原創者親授)。 <span class="cite">S03 p.15</span></li>
+<li>The GAN Zoo:曾經紅到人人都要做一個 GAN。 <span class="cite">S03 p.16</span></li>
+<li>字型生成 GAN 的例子(512 × 512 輸出,「Variational Grid Setting Network」)。 <span class="cite">S03 p.17</span></li>
+</ul>
+<h3>GAN 的架構與訓練</h3>
+<ul>
+<li>做法是訓練兩個神經網路:生成器 Generator(由靈感生成創作作品)與鑑別器 Discriminator(判斷創作是否夠像),這就是生成對抗網路(GAN)。 <span class="cite">S03 p.18</span></li>
+<li>GAN 是兩個神經網路,一個叫生成器、一個叫鑑別器,相互對抗。 <span class="cite">S03 p.19</span></li>
+<li>先訓練鑑別器的「品味」:真實世界(符合我們標準)的作品,正確答案是 1;生成器的作品,正確答案是 0。 <span class="cite">S03 p.20</span></li>
+<li>再訓練生成器:鑑別器的參數不動(評分標準固定),輸入 latent z 給生成器,希望鑑別器對其輸出打 1,即「希望老師肯定的生成器」。 <span class="cite">S03 p.21</span></li>
+<li>對生成器 G:希望 D(G(z)) 接近 1;對鑑別器 D:希望 D(G(z)) 接近 0、D(x) 接近 1。「GAN 就是生成器、鑑別器大對抗」。 <span class="cite">S03 p.22</span></li>
+<li>符號:p_z 為 latent vector 的分布;p_x = p_data 為真實世界的分布;p_g = p_model 為生成器(呆萌 AI)的分布。 <span class="cite">S03 p.23</span></li>
+<li>x ∼ p_data 意思是真實世界的一張照片。 <span class="cite">S03 p.24</span></li>
+<li>插播 log:log 是遞增函數;log 把可怕的乘法變成可愛的加法,log(a·b) = log(a) + log(b)。 <span class="cite">S03 p.25-26</span></li>
+<li>鑑別器 D 的 loss 兩項:E_{x∼p_data}[log D(x)] 越接近 1 越好;E_{z∼p_z}[log(1 − D(G(z)))] 中 D(G(z)) 越接近 0 越好;兩者都越大越好。 <span class="cite">S03 p.27</span></li>
+<li>生成器 G 方面:E_{z∼p_z}[log(1 − D(G(z)))] 這個越小越好(D(G(z)) 越接近 1 越好)。 <span class="cite">S03 p.28</span></li>
+<li>合併為 min_G max_D V(D,G) = E_{x∼p_data}[log D(x)] + E_{z∼p_z}[log(1 − D(G(z)))],稱為「生成對抗」。 <span class="cite">S03 p.29</span></li>
+<li>學習過程(取自 Goodfellow 等 2014 原始論文圖):一開始 G 被「下馬威」(D 能明顯區分 p_x 與 p_g);學成時 p_x = p_g,D 無法分辨哪個是真的。 <span class="cite">S03 p.30-31</span></li>
+</ul>
+<h3>WGAN 與 collapse</h3>
+<ul>
+<li>令人拍案叫絕的 WGAN(Wasserstein GAN,Arjovsky、Chintala、Bottou)「把 GAN 真正推上高峰」。 <span class="cite">S03 p.32</span></li>
+<li>WGAN 解決問題之一:Collapse 崩壞。生成器可能「管他的,反正都生這張,我知道老師會接受」,即不論 z 為何都生成同一張。 <span class="cite">S03 p.33</span></li>
+</ul>
+<h3>GAN 的高光時刻</h3>
+<ul>
+<li>GAN 一度成為電腦創作的王牌,尤其是 StyleGAN。 <span class="cite">S03 p.35</span></li>
+<li>Progressive GAN(Karras 等 NVIDIA 團隊,「Progressive Growing of GANs for Improved Quality, Stability, and Variation」)用來生成明星照片,為 StyleGAN 前傳。 <span class="cite">S03 p.36</span></li>
+<li>Progressive GAN 原理:直接生成高解析度(1024 × 1024)很難,直接生成低解析度(4×4)很容易;生成器就從簡單學到精細(4×4 → 8×8 → … → 1024 × 1024)。 <span class="cite">S03 p.37-38</span></li>
+<li>Progressive GAN 生成名人照片,標語「這攏係假ㄟ啦(明星照)」。 <span class="cite">S03 p.39</span></li>
+<li>This X Does Not Exist 系列(thispersondoesnotexist.com、thisxdoesnotexist.com):AI 生出各種不同的 X;生成人比第一代強。 <span class="cite">S03 p.40, p.48-49</span></li>
+</ul>
+<h3>StyleGAN:控制生成的內容與風格</h3>
+<ul>
+<li>動機:能不能對生成的東西有點「控制」?可想像新的 latent vector z′ = x + w:在一個 latent vector 中是內容向量(或天馬行空的創意),「加上」(不一定真的加,反正就合起來)風格向量。 <span class="cite">S03 p.41</span></li>
+<li>StyleGAN 原版:先把輸入的 latent vector z(512 維)轉成 w(512 維)。 <span class="cite">S03 p.42</span></li>
+<li>然後對 w 做一次 affine transformation(Aw + b,A、b 都是學來的),得到 y = (y_s, y_b)。 <span class="cite">S03 p.43</span></li>
+<li>真正是以 AdaIN 加入:對第 i 個 channel 做 normalization,再乘 y_{s,i}、加 y_{b,i}。 <span class="cite">S03 p.44</span></li>
+<li>生成器從簡單學到精細(4×4、8×8、…、1024×1024),每一層都用 AdaIN 加入風格向量 w 與 noise。 <span class="cite">S03 p.45</span></li>
+<li>w 就像是 prompt:不斷提醒 AI 該怎麼畫。 <span class="cite">S03 p.46</span></li>
+<li>可以變換提示:前段層用 w1、後段層用 w2,前段決定「內容」、後段決定「風格」。 <span class="cite">S03 p.47</span></li>
+</ul>
+<h3>條件式 GAN:pix2pix 與 CycleGAN</h3>
+<ul>
+<li>pix2pix(Isola、朱俊彦等,CVPR 2017):簡單畫畫就產生很真實的相片,例如衛星圖變地圖。 <span class="cite">S03 p.50</span></li>
+<li>pix2pix 的鑑別器要同時收到輸入與輸出。 <span class="cite">S03 p.51</span></li>
+<li>pix2pix 可用於畫畫變街景,可以訓練自駕車。 <span class="cite">S03 p.52</span></li>
+<li>CycleGAN(朱俊彦等,ICCV 2017):讓人驚呆的魔法。 <span class="cite">S03 p.53</span></li>
+<li>CycleGAN 的資料「不需要」配對:兩個 domain(A、B)各有生成器與鑑別器,於是有無限可能;如「Cycle GAN」般的機器翻譯。 <span class="cite">S03 p.54</span></li>
+<li>馬變斑馬的示範;作者群幽默展示失敗例。 <span class="cite">S03 p.55-56</span></li>
+<li>大家一度認為 GAN 是電腦創作的巔峰,直到出現 diffusion models。 <span class="cite">S03 p.58</span></li>
+</ul>
+<h3>Cross Entropy</h3>
+<ul>
+<li>前情摘要:八哥辨識可看成每次輸出一個機率分布(最後經 softmax)。 <span class="cite">S03 p.60</span></li>
+<li>例:輸出 [0.6, 0.3, 0.1],正確答案 [1, 0, 0],所以的確是「正確」的(土八哥得分最高)。 <span class="cite">S03 p.61</span></li>
+<li>以均方差計算 loss:[0.6, 0.3, 0.1] 對 [1,0,0] 為 0.26;[0.6, 0.2, 0.2] 對 [1,0,0] 為 0.24。 <span class="cite">S03 p.62</span></li>
+<li>問題:這兩個答案都算正確,很多時候也是「一樣好」(因為正確答案都是 60%),有沒有可能有算法讓 loss 一樣? <span class="cite">S03 p.63</span></li>
+<li>資訊量(驚訝指數):事件發生機率 p 很低就很驚訝、機率很高就一點也不驚訝,表示為 −log(p)。 <span class="cite">S03 p.64</span></li>
+<li>機率越低的事,資訊量越大;正式名稱 I(x) = −log P(x)。 <span class="cite">S03 p.65-66</span></li>
+<li>回到八哥:只在意正確答案(土八哥)的得分,得分越高扣分越少,得分越低就越「驚訝」。 <span class="cite">S03 p.67</span></li>
+<li>Cross Entropy:以 [1,0,0] 與 [0.6,0.3,0.1] 為例為 −log(ŷ1);換言之,正確答案你還說機率很低,就給你扣分。 <span class="cite">S03 p.68</span></li>
+<li>概念上是比較真實世界的機率分布 P 與神經網路學到的機率分布 Q(Q 是用 softmax 硬是弄成的),希望越接近越好。 <span class="cite">S03 p.69</span></li>
+<li>Cross Entropy 也可以當 loss function(分類問題這個還更適合);但到底 cross 在哪?Entropy 又是什麼? <span class="cite">S03 p.70</span></li>
+<li>假設一個機率分布有 n 個事件,機率為 P = [p1, …, pn]。 <span class="cite">S03 p.71</span></li>
+<li>Entropy(熵)是訊息量的期望值(平均):H(P) = −Σ p_i log p_i。越大表示平均訊息量越大、情況越複雜;只有一個事件且機率為 1 時 entropy 為 0,所以大家常說 entropy 是「亂度」。 <span class="cite">S03 p.72</span></li>
+<li>寫成期望值:H(X) = −E_{x∼P}[log P(x)] = −Σ P(x) log P(x)。 <span class="cite">S03 p.73</span></li>
+<li>三個事件的 (Shannon) Entropy:H = −[p1 log p1 + p2 log p2 + p3 log p3]。 <span class="cite">S03 p.74</span></li>
+<li>兩個機率分布 P(正確答案 y)、Q(模型答案 ŷ)共有同樣三種事件,cross entropy H(P,Q) = −Σ y_i log ŷ_i。 <span class="cite">S03 p.75-77</span></li>
+<li>正確答案是 one-hot encoding 時,若第 i 類為正確答案(y_i = 1),H(P,Q) = −y_i log ŷ_i = −log ŷ_i:ŷ_i 很大則 −log ŷ_i 很小;正確答案還說機率很小,當然要給你扣分。 <span class="cite">S03 p.78-80</span></li>
+<li>複習 MSE:兩個 k 維空間點距離的平方,L(θ) = (1/2k) Σ ‖y_i − ŷ_i‖²。 <span class="cite">S03 p.81</span></li>
+<li>為什麼不用 MSE:正確答案 [1,0,0],兩次答案 [0.7,0.19,0.11] 與 [0.7,0.3,0],MSE 分別為 0.14、0.18,Cross Entropy 皆為 0.36(Cross Entropy 單純在意正確答案)。 <span class="cite">S03 p.82</span></li>
+<li>當 Q = P 時 H(P,Q) 有最小值,即 P 的 entropy H(P);注意最小值不一定是 0。 <span class="cite">S03 p.83</span></li>
+<li>KL 散度(Kullback-Leibler Divergence):D_KL(P‖Q) = H(P,Q) − H(P);當 Q = P 時 KL 散度為 0。 <span class="cite">S03 p.84</span></li>
+<li>H(P) 是真實世界的 entropy,為固定數值,所以 cross entropy 越小、KL 散度也越小。 <span class="cite">S03 p.85</span></li>
+<li>例:正確答案 [0.7,0.2,0.1],兩次答案 [0.75,0.15,0.1] 與 [0.6,0.3,0.1];Cross Entropy 為 0.81 與 0.83,KL 散度為 0.01 與 0.03(3 倍),即差異量級在 KL 散度上較明顯。 <span class="cite">S03 p.86</span></li>
+<li>需要學 soft target 的時候,就該考慮 KL 散度,例如蒸餾(老師模型、學生模型)。 <span class="cite">S03 p.87</span></li>
+<li>一般學習用 hard target(如 [1,0,0]);若老師模型說 [0.7,0.25,0.05],學生模型試著學老師的「思路」即 soft target。 <span class="cite">S03 p.88-90</span></li>
+</ul>
+<h3>隨機性怎麼出來的</h3>
+<ul>
+<li>在 GAN 裡,隨機性來自一開始隨機抽「天馬行空的想法」latent z。 <span class="cite">S03 p.92</span></li>
+<li>回到八哥辨識:若永遠選最高分(0.6 的土八哥),同樣的輸入就會是同樣的輸出。 <span class="cite">S03 p.93</span></li>
+<li>但也可以依機率抽一個答案:60% 抽到土八哥、30% 抽到白尾八哥、10% 抽到家八哥。 <span class="cite">S03 p.94</span></li>
+<li>在八哥辨識依機率抽好像沒道理,但換了題目(例:客人化為神秘的輸入,輸出三種咖啡豆處理法的機率)如果是咖啡推薦 AI,可能就比較有道理。 <span class="cite">S03 p.95</span></li>
+<li>語言模型就是用機率抽字:看前面的一堆字,猜下一個字(機率來自 softmax)。 <span class="cite">S03 p.96</span></li>
+<li>很多人說 AI 有兩種:鑑別式 AI(Discriminative AI)與生成式 AI(Generative AI);然後「背資料學 AI」的人會說生成式 AI 有幻覺,所以有時要用鑑別式 AI。可是,原理上它們是一樣的。 <span class="cite">S03 p.97-98</span></li>
+</ul>
+<h3>作業與 AI Canvas</h3>
+<ul>
+<li>作業:設計你自己的呆萌型 AI 機器人,想一個真心想要、越貼近生活越好的 AI 機器人,寫下:①它的輸入是什麼、②輸出是什麼、③你為什麼想要它。 <span class="cite">S03 p.99-100</span></li>
+<li>AI Canvas:上排為領域專家的期望(問題:我想解決什麼問題;能力:我需要 AI 有這樣的能力;判斷:為什麼 AI 有了這樣的能力可以幫助我解決問題),下排為 AI 的任務(輸入:需寫出所有的 features;輸出:一定要是一個 tensor;數據:足夠的數據容易找嗎、大概可以有多少筆訓練資料)。 <span class="cite">S03 p.101</span></li>
+</ul>
+<h2>關鍵術語</h2>
+<ul>
+<li>函數學習機 / 呆萌型 AI 機器人:fθ,知道輸入是什麼、輸出長什麼樣子的 AI 模型。 <span class="cite">S03 p.3</span></li>
+<li>一對多(非函數):同一輸入對應多個可能輸出;硬訓練會得到輸出的平均。 <span class="cite">S03 p.7</span></li>
+<li>Latent tensor(潛張量)/ latent vector:天馬行空的「想法」z,也是某個數據的特徵表現 Tensor,可由計算得出或隨機產生。 <span class="cite">S03 p.9-10</span></li>
+<li>GAN(生成對抗網路):兩個神經網路(生成器 G 與鑑別器 D)相互對抗。 <span class="cite">S03 p.18-19</span></li>
+<li>生成器 Generator / 鑑別器 Discriminator:前者由靈感生成創作作品,後者判斷創作是否夠像。 <span class="cite">S03 p.18</span></li>
+<li>p_z、p_data(p_x)、p_model(p_g):latent vector 分布、真實世界分布、生成器分布。 <span class="cite">S03 p.23</span></li>
+<li>min-max loss V(D,G):GAN 的目標函數,D 取最大、G 取最小。 <span class="cite">S03 p.29</span></li>
+<li>Collapse(崩壞):生成器總是產生同一張被接受的作品(WGAN 解決的問題之一)。 <span class="cite">S03 p.33</span></li>
+<li>WGAN:Wasserstein GAN。 <span class="cite">S03 p.32</span></li>
+<li>Progressive GAN:由低解析度逐步學到高解析度的 GAN。 <span class="cite">S03 p.36-38</span></li>
+<li>StyleGAN:以內容向量與風格向量控制生成;w 由 latent z 轉換而來(512 維)。 <span class="cite">S03 p.41-42</span></li>
+<li>AdaIN:對第 i 個 channel 做 normalization 後,用學來的 y_s、y_b 縮放與平移的風格注入方式。 <span class="cite">S03 p.44</span></li>
+<li>w(風格向量):就像是 prompt,不斷提醒 AI 該怎麼畫。 <span class="cite">S03 p.45-46</span></li>
+<li>pix2pix:輸入輸出配對的圖像轉換;鑑別器同時看輸入與輸出。 <span class="cite">S03 p.50-51</span></li>
+<li>CycleGAN:資料不需配對的圖像轉換(兩 domain 各一組生成器與鑑別器)。 <span class="cite">S03 p.54</span></li>
+<li>資訊量(驚訝指數):I(x) = −log P(x),機率越低資訊量越大。 <span class="cite">S03 p.64-66</span></li>
+<li>Entropy(熵):訊息量的期望值,H(P) = −Σ p_i log p_i,可稱「亂度」。 <span class="cite">S03 p.72</span></li>
+<li>Cross Entropy:H(P,Q) = −Σ y_i log ŷ_i;one-hot 時簡化為 −log ŷ_i。 <span class="cite">S03 p.76-78</span></li>
+<li>KL 散度:D_KL(P‖Q) = H(P,Q) − H(P);Q = P 時為 0。 <span class="cite">S03 p.84</span></li>
+<li>Hard target / Soft target:如 [1,0,0] 的標準答案 / 老師模型給出的機率分布(如 [0.7,0.25,0.05])。 <span class="cite">S03 p.88-90</span></li>
+<li>蒸餾(distillation):學生模型學老師模型的 soft target,適合用 KL 散度。 <span class="cite">S03 p.87</span></li>
+<li>softmax:把網路輸出轉成機率分布,供依機率抽樣(如語言模型抽字)。 <span class="cite">S03 p.69, p.96</span></li>
+<li>鑑別式 AI / 生成式 AI:常見的兩種分法,講者認為原理上是一樣的。 <span class="cite">S03 p.97-98</span></li>
+<li>AI Canvas:問題、能力、判斷(領域專家的期望)與輸入、輸出、數據(AI 的任務)六格規劃表。 <span class="cite">S03 p.101</span></li>
+</ul>
+<h2>例子/比喻</h2>
+<ul>
+<li>「一個可愛的女孩」輸入對應多張不同的女孩圖,說明一對多問題。 <span class="cite">S03 p.5-8</span></li>
+<li>鑑別器像「老師」,生成器努力生成「希望老師肯定」的作品;評分標準固定時才訓練生成器。 <span class="cite">S03 p.21, p.33</span></li>
+<li>生成器崩壞:「管他的,反正都生這張,我知道老師會接受!」 <span class="cite">S03 p.33</span></li>
+<li>在幾乎不下雨的加州:「明天下雨」資訊量大(「真假!?」),「明天是晴天」是廢話。 <span class="cite">S03 p.65</span></li>
+<li>八哥辨識(土八哥、白尾八哥、家八哥)作為 softmax 輸出、MSE、Cross Entropy 的貫穿例子。 <span class="cite">S03 p.60-68, p.93-94</span></li>
+<li>老師與學生模型(蒸餾)說明 soft target。 <span class="cite">S03 p.87-90</span></li>
+<li>咖啡推薦 AI(衣索比亞日曬、瓜地馬拉水洗、哥斯大黎加蜜處理)說明依機率抽樣有道理。 <span class="cite">S03 p.95</span></li>
+<li>語言模型:看前面「呆一布在」(呆萌型 AI 的字例)猜下一個字,候選字帶機率。 <span class="cite">S03 p.96</span></li>
+<li>This Person Does Not Exist 等網站作為 GAN 成果示範。 <span class="cite">S03 p.48-49</span></li>
+<li>馬變斑馬(CycleGAN)、衛星圖變地圖與畫畫變街景(pix2pix)。 <span class="cite">S03 p.50-55</span></li>
+</ul>
+<h2>文字層異常處</h2>
+<p>文字層大量缺字(常見缺「一」、「生」、「成」、「入」、「大」、「小」等)且順序錯亂;下列頁面已用圖片核對:</p>
+<ul>
+<li>p.3-10:缺字、順序亂,已核對圖片(標題與對話框)。</li>
+<li>p.20-23:圖中輸入/輸出與正確答案標示、GAN 符號,已核對。</li>
+<li>p.27-33:公式與圖中標示(越大/越小、min max)及學習過程圖,已核對。</li>
+<li>p.41-47:StyleGAN 各頁公式與圖,已核對。</li>
+<li>p.82、p.86、p.87:表格數值與圖(MSE/CE、CE/KL)已核對。</li>
+<li>p.94-96:八哥機率、咖啡豆、語言模型抽字頁已核對。</li>
+<li>p.100-101:作業與 AI Canvas 的文字已核對。</li>
+</ul>
+<p>以下頁面僅依文字層推斷,未逐頁看圖,細節可能有缺字:p.17(字型生成 GAN 標題與「大圖輸出」類標語未完整還原,故不寫入)、p.36(Progressive GAN 年份、Theano 相關附註)、p.39、p.57(館長/陳沂等人名文字層混亂,故不寫入)、p.60-81、p.83-85、p.88-90、p.92-93。</p></main></body></html>
