@@ -1,17 +1,23 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Log</title>
 <style>
-:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da}
-@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a}}
-body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC",sans-serif}
+:root{--bg:#070b14;--bg2:#0d1424;--panel:#111a2e;--panel2:#16213a;--line:#233152;--fg:#e6edf7;--mut:#8a98b5;
+--cy:#22d3ee;--vi:#a78bfa;--ok:#34d399;--bad:#fb7185;--glow:0 0 0 1px rgba(34,211,238,.35),0 0 24px rgba(34,211,238,.12)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(1200px 600px at 80% -10%,rgba(167,139,250,.14),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(34,211,238,.10),transparent 55%),var(--bg);
+color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;min-height:100vh}
+a{color:var(--cy)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
 main{max-width:820px;margin:0 auto;padding:24px 16px 80px}
-a{color:var(--acc)}h1{font-size:1.7rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
-.cite{font:12px ui-monospace,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
-code{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+h1{font-size:1.7rem}h2{margin-top:2rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}
+.cite{font:12px ui-monospace,monospace;color:var(--cy);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+code{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:0 4px}
 table{border-collapse:collapse;width:100%}td{border:1px solid var(--line);padding:6px 8px;vertical-align:top}
 nav{font-size:14px;color:var(--mut);margin-bottom:12px}
 </style></head><body><main>
-<nav><a href="index.html">← wiki 首頁</a> · <a href="../index.html">← 簡報</a></nav>
+<nav><a href="index.html">← wiki 首頁</a> · <a href="../index.html">← 闖關首頁</a></nav>
 <h1>Log</h1>
 <h2>[2026-11-21] setup | 建立 schema 與資料夾</h2>
 <ul>
@@ -79,7 +85,17 @@ nav{font-size:14px;color:var(--mut);margin-bottom:12px}
 <li>出處頁碼與句子不對應(S03 p.96 只支持「依機率抽字」,不支持「打分→softmax」);</li>
 <li>把「未核對」內容當成定論(S06 p.17,後經看圖確認屬實:標題「某種程度來說,人的幻覺也許比較嚴重」)。</li>
 </ul>
-<p>  → 全部改回貼近 wiki 原句;兩句「回顧/說明」標為 meta(不陳述新事實)。</p>
+<p>  → 處理結果:9 項改寫為貼近 wiki 原句;3 項(S08 未核對頁)已看圖核對成立,不需改字;1 項(S06 p.17)看圖確認屬實,保留;1 項(末頁「這份簡報本身…」)標為說明性文字(meta);另 1 項(回顧句)亦標 meta。</p>
 <ul>
 <li>渲染檢查(Chrome headless,1280×720 / 1024×640 / 500×900):第一版第 13 頁在 1280×720 內容超出 33 px,且頁面選單浮在內容上蓋到邊緣 → 改為獨立底部控制列並收緊字級,重測 14 頁皆無溢出。</li>
+</ul>
+<h2>[2026-11-21] query | 闖關問答(取代 14 頁簡報)</h2>
+<p>依使用者要求改為「問答版」:10 個關卡對應課程 10 單元,每關 5 題,可自選關卡,答完顯示解析;暗色科技風。題庫 tools/quiz.json,關卡腳本同簡報版(白名單 + 出處必須在 wiki 內)。</p>
+<ul>
+<li>第一版題庫通過出處關卡,但腳本統計顯示 <b>50 題中 45 題的正確選項是最長的</b>(學生可憑長度猜答案),答案位置也偏(28 題在 B)。→ 另一個子代理重寫錯誤選項(正確選項、題目、解析、出處不可動),我用程式驗證這四項與原檔逐字相同;重寫後我重算:嚴格最長 9/50(子代理自報 8,差 1 題來自之後我改的兩個選項)、另有 12 題並列最長,位置 13/13/12/12。</li>
+<li>子代理自報 7 個干擾選項不夠確定;我檢視後替換 1 個有爭議的(把每次對話複製貼上到 prompt 也算粗糙的長期記憶)。</li>
+<li>獨立審查(全新對話,50 題):2 題小問題,0 題需換正確答案:</li>
+<li>L8 Q3:干擾選項「更穩」可被辯護 → 改為「LLM 自己回答一定比較慢」;解析引句「一共 600 元」與 wiki 的「共 600 元」不一致。看圖確認<b>投影片原文為「一共」</b>,wiki 轉述有誤 → 修正 wiki(concepts/tool-use-and-patterns.md、sources/08)並補上 S08 p.24、p.29 出處。</li>
+<li>L3 Q1:解析需 S03 p.93 出處;看圖確認該頁原文「我們是選最高分,所以同樣的輸入,會是同樣的輸出」→ 補出處並加入白名單。</li>
+<li>互動測試(Chrome headless):10 關 × 5 題自動玩完,每題 4 選項、恰 1 個正確、有解析與出處,無 JS 錯誤。</li>
 </ul></main></body></html>

@@ -1,182 +1,178 @@
 <!doctype html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>生成式 AI 入門教學簡報</title>
-<meta name="description" content="用 LLM Wiki 製作的生成式 AI 入門教學簡報:從神經網路、LLM 到 Agent 與工作流程。">
+<title>生成式 AI 闖關問答</title>
+<meta name="description" content="10 個關卡、50 題,用 LLM Wiki 整理的課程內容闖關;每題答完都有解析與出處。">
 <style>
-:root{--bg:#fbfaf7;--fg:#1f2430;--mut:#6b7280;--acc:#2f6fe4;--card:#fff;--line:#e5e2da;--hl:#eef3ff}
-@media (prefers-color-scheme:dark){:root{--bg:#14161b;--fg:#e8e9ee;--mut:#9aa0ad;--acc:#7aa7ff;--card:#1c1f26;--line:#2c303a;--hl:#1b2540}}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--fg);font:clamp(15px,1.42vw,19px)/1.62 system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;overflow:hidden}
-.slide{position:absolute;inset:0;display:none;flex-direction:column;padding:0 16px}
-.slide.on{display:flex}
-.inner{flex:1;overflow:auto;width:100%;max-width:1040px;margin:0 auto;padding:3vh 0 1.5vh}
-.kicker{color:var(--acc);font-weight:600;letter-spacing:.08em;font-size:.8em}
-h2{font-size:clamp(22px,3.2vw,40px);line-height:1.25;margin:.2em 0 .6em}
-.take{background:var(--hl);border-left:4px solid var(--acc);padding:.7em 1em;border-radius:6px;margin-bottom:1em}
-.pts{padding-left:1.1em;margin:0}
-.pts li{margin:.38em 0}
-.cite{display:inline-block;font:11px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mut);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-left:3px;white-space:nowrap;vertical-align:1px}
-footer{width:100%;max-width:1040px;margin:0 auto;display:flex;align-items:center;color:var(--mut);font-size:13px;height:60px;padding:0 440px 0 0;border-top:1px solid var(--line)}
-footer a{color:var(--acc);margin-right:6px}
-.cover h2{font-size:clamp(28px,5vw,60px)}
-.nav{position:fixed;right:16px;bottom:8px;display:flex;gap:8px;z-index:5}
-.nav button{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;width:44px;height:44px;font-size:18px;cursor:pointer}
-.nav button:hover{border-color:var(--acc)}
-#bar{position:fixed;left:0;top:0;height:3px;background:var(--acc);width:0;z-index:6;transition:width .2s}
-#toc{position:fixed;right:120px;bottom:8px;z-index:5}
-#toc select{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;height:44px;padding:0 8px;width:min(320px,calc(100vw - 150px))}
-@media (max-width:760px){footer{height:112px;align-items:flex-start;padding:10px 0 0}#toc{left:16px;right:auto}#toc select{width:calc(100vw - 150px)}}
-@media print{body{overflow:visible;height:auto}.slide{position:static;display:flex;page-break-after:always;min-height:100vh}.nav,#toc,#bar{display:none}}
-</style></head><body>
-<div id="bar"></div>
 
-<section class="slide cover" id="s1" data-title="生成式 AI 是什麼?從「猜下一個字」到「教 AI 做事」">
-  <div class="inner">
-    <div class="kicker">開場</div>
-    <h2>生成式 AI 是什麼?從「猜下一個字」到「教 AI 做事」</h2>
-    <div class="take"><b>一句話:</b>AI Agent 其實只是「教 AI 做事的方法」——這是講者對「學 AI 好難」這個焦慮的回應。 <span class="cite">S01 p.42</span></div>
-    <ul class="pts"><li><span class="t">這份簡報分三段:① 模型怎麼運作 → ② 怎麼用模型 → ③ 從聊天到做事(Agent 與流程)。</span> </li><li><span class="t">講者說,學 AI 的焦慮之一是「感覺好難」;回應是:AI Agent 其實只是「教 AI 做事的方法」。</span> <span class="cite">S01 p.42</span></li><li><span class="t">課程特色之一是「用原理對抗焦慮」(另一個是「教 AI 用你的方法做事」)。</span> <span class="cite">S01 p.38</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/index.html" target="_blank" rel="noopener">index</a> <a href="wiki-site/ai-agent-harness.html" target="_blank" rel="noopener">ai-agent-harness</a></span></footer>
-</section>
-<section class="slide" id="s2" data-title="AI 其實是一個「呆萌的函數」">
-  <div class="inner">
-    <div class="kicker">① 模型怎麼運作</div>
-    <h2>AI 其實是一個「呆萌的函數」</h2>
-    <div class="take"><b>一句話:</b>AI 模型 = 一台函數學習機 f_θ:你告訴它輸入與輸出長什麼樣子,它學出中間的對應。 <span class="cite">S02 p.3</span></div>
-    <ul class="pts"><li><span class="t">講者把模型比喻成「呆萌型 AI 機器人」(呆一布 DIVE):你要告訴它輸入是什麼、輸出長什麼樣子;它不會分析,沒有意識,不知道自己在做什麼。</span> <span class="cite">S01 p.45</span><span class="cite">S02 p.3</span></li><li><span class="t">例子:野外拍到一隻八哥,輸入是一張照片,輸出其實是三個數字,分別對應土八哥、白尾八哥、家八哥。</span> <span class="cite">S01 p.46</span><span class="cite">S01 p.48</span><span class="cite">S02 p.11</span></li><li><span class="t">輸入與輸出都必須是數字(張量);圖片有 R、G、B 三個通道。</span> <span class="cite">S02 p.9</span><span class="cite">S02 p.10</span></li><li><span class="t">類別用 one-hot encoding 表示:土八哥 [1,0,0]、白尾八哥 [0,1,0]、家八哥 [0,0,1]。</span> <span class="cite">S02 p.12</span></li><li><span class="t">神經網路的神經元把輸入乘上權重、加上偏值,再經過激發函數(如 ReLU、Sigmoid)轉換後送出。</span> <span class="cite">S02 p.34</span><span class="cite">S02 p.35</span><span class="cite">S02 p.36</span><span class="cite">S02 p.38</span></li><li><span class="t">生成式 AI 也是這種呆萌型機器人。</span> <span class="cite">S01 p.49</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/neural-network.html" target="_blank" rel="noopener">neural-network</a></span></footer>
-</section>
-<section class="slide" id="s3" data-title="它怎麼學會?Loss 與梯度下降">
-  <div class="inner">
-    <div class="kicker">① 模型怎麼運作</div>
-    <h2>它怎麼學會?Loss 與梯度下降</h2>
-    <div class="take"><b>一句話:</b>訓練 = 量出「錯多少」(loss),再一步步調整參數讓 loss 變小。 <span class="cite">S02 p.73</span></div>
-    <ul class="pts"><li><span class="t">訓練時會定義 loss function:看神經網路考「考古題」時,答案和正確答案差多少。</span> <span class="cite">S02 p.70</span></li><li><span class="t">訓練就是調整參數 θ,讓 loss 越來越小,目標是找到使 loss 最小的 θ*。</span> <span class="cite">S02 p.73</span><span class="cite">S02 p.74</span></li><li><span class="t">梯度下降像「走」向最小值:靠切線斜率判斷方向;但斜率指的方向其實是(局部)極大值的方向,所以要往相反方向走。</span> <span class="cite">S02 p.87</span></li><li><span class="t">一次走太大會跑過頭,所以步伐乘上一個小數,叫 learning rate。</span> <span class="cite">S02 p.91</span><span class="cite">S02 p.92</span></li><li><span class="t">不管模型怎麼架、選什麼 loss,都可以用 gradient descent 訓練。</span> <span class="cite">S02 p.104</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/loss-and-gradient-descent.html" target="_blank" rel="noopener">loss-and-gradient-descent</a></span></footer>
-</section>
-<section class="slide" id="s4" data-title="為什麼 AI 每次回答都不一樣?">
-  <div class="inner">
-    <div class="kicker">① 模型怎麼運作</div>
-    <h2>為什麼 AI 每次回答都不一樣?</h2>
-    <div class="take"><b>一句話:</b>AI 每次答案不同,是因為它「依機率抽」答案;語言模型就是依機率抽字。 <span class="cite">S03 p.94</span><span class="cite">S03 p.96</span></div>
-    <ul class="pts"><li><span class="t">八哥辨識若永遠選最高分(土八哥 0.6),同樣輸入就永遠同樣輸出;但也可以依機率抽:60% 土八哥、30% 白尾八哥、10% 家八哥。</span> <span class="cite">S03 p.94</span></li><li><span class="t">八哥辨識依機率抽好像沒道理,但若是「咖啡豆處理法推薦 AI」,依機率抽就比較有道理。</span> <span class="cite">S03 p.95</span></li><li><span class="t">語言模型就是用機率抽字:看前面的字,猜下一個字。</span> <span class="cite">S03 p.96</span></li><li><span class="t">創作型 AI(如 GAN)還有另一個隨機來源:輸入一個 latent tensor z(「天馬行空的想法」),隨機抽 z 就是隨機性的來源。</span> <span class="cite">S03 p.6</span><span class="cite">S03 p.7</span><span class="cite">S03 p.9</span></li><li><span class="t">temperature 控制隨機程度:大於 1 更隨機、小於 1 更固定;實務上常設 τ=1,想更隨機也只設到 1.1。</span> <span class="cite">S04 p.56</span><span class="cite">S04 p.58</span></li><li><span class="t">top-k:只有機率前 k 名(如 50)的字可被選。</span> <span class="cite">S04 p.60</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/softmax-and-sampling.html" target="_blank" rel="noopener">softmax-and-sampling</a></span></footer>
-</section>
-<section class="slide" id="s5" data-title="LLM 就是在「猜下一個字」">
-  <div class="inner">
-    <div class="kicker">① 模型怎麼運作</div>
-    <h2>LLM 就是在「猜下一個字」</h2>
-    <div class="take"><b>一句話:</b>LLM 的核心是一個函數:看到前面的字,輸出下一個字;被訓練成「很會接話」。 <span class="cite">S04 p.8</span></div>
-    <ul class="pts"><li><span class="t">訓練資料隨手可得:任何句子都能拆成「輸入—答案」配對。例如「炎龍老師很帥」拆成 (炎,龍)、(龍,老)、(老,師)、(師,很)、(很,帥)。</span> <span class="cite">S04 p.9</span></li><li><span class="t">只看一個字會出問題:用「今天天氣很好。」訓練,「天」會同時有「天」和「氣」兩個答案,就不是函數。</span> <span class="cite">S04 p.10</span></li><li><span class="t">所以模型要「有記憶」:除了目前的字,還要把前面的字融合成一個記憶向量一起輸入。</span> <span class="cite">S04 p.11</span></li><li><span class="t">規模:GPT-2 約 15 億參數,GPT-3 約 1,750 億參數。</span> <span class="cite">S04 p.42</span><span class="cite">S04 p.43</span></li><li><span class="t">現代 LLM「大概什麼都讀過了」,所以什麼話都接得上。</span> <span class="cite">S04 p.45</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/next-token-prediction.html" target="_blank" rel="noopener">next-token-prediction</a></span></footer>
-</section>
-<section class="slide" id="s6" data-title="它怎麼「看」前文?注意力與 Transformer">
-  <div class="inner">
-    <div class="kicker">① 模型怎麼運作</div>
-    <h2>它怎麼「看」前文?注意力與 Transformer</h2>
-    <div class="take"><b>一句話:</b>2017 年 Google 提出 Transformer(“Attention is All you Need”),主要想取代 RNN。 <span class="cite">S05 p.16</span></div>
-    <ul class="pts"><li><span class="t">2017 年 Google 發表 “Attention is All you Need”,主要想取代 RNN。</span> <span class="cite">S05 p.16</span></li><li><span class="t">直覺比喻:q 是「問題」,k、v 是「先備知識」,輸出 h 是「適合這個問題的結果」。</span> <span class="cite">S05 p.17</span></li><li><span class="t">Transformer 一次處理整串字,所以字的先後順序沒被考慮;要另外把「位置」加進去(position encoding)。</span> <span class="cite">S05 p.42</span></li><li><span class="t">位置編碼的比喻:十進位數字越高位數變化越慢;sin/cos 成對,像時鐘上的指針,低位元的時鐘轉得快、高位元的轉得慢。</span> <span class="cite">S05 p.43</span><span class="cite">S05 p.49</span></li><li><span class="t">位置向量 p_t 與詞向量 x_t 同維度,直接相加。</span> <span class="cite">S05 p.45</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/attention-transformer.html" target="_blank" rel="noopener">attention-transformer</a></span></footer>
-</section>
-<section class="slide" id="s7" data-title="「幻覺」不是 bug,是特性">
-  <div class="inner">
-    <div class="kicker">① 模型怎麼運作</div>
-    <h2>「幻覺」不是 bug,是特性</h2>
-    <div class="take"><b>一句話:</b>LLM 是「作夢的機器」;你要負責讀它寫了什麼。 <span class="cite">S06 p.16</span><span class="cite">S06 p.33</span></div>
-    <ul class="pts"><li><span class="t">引用 Karpathy:LLM 沒有「幻覺問題」;幻覺不是錯誤,而是 LLM 最偉大的特點,LLM 是「作夢的機器」。</span> <span class="cite">S06 p.16</span></li><li><span class="t">比喻:搜尋引擎是 0% 的夢境(不會創造),LLM 則是作夢的機器。人們真正的意思是「不希望 LLM 助理發生幻覺」。</span> <span class="cite">S06 p.16</span></li><li><span class="t">最重要的使用技巧:一定要讀它寫了什麼。AI 生成的都是「幻覺」,要用自己的專業判斷合不合適;沒有寫錯不代表寫對了我們的意思。</span> <span class="cite">S06 p.33</span></li><li><span class="t">人的幻覺也許更嚴重,例如「AI 會的,就以為自己也會了」。</span> <span class="cite">S06 p.17</span></li><li><span class="t">態度:不要覺得 AI 說的一定對,也不要笑它不知道你知道的東西,你們是夥伴。</span> <span class="cite">S06 p.47</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/hallucination.html" target="_blank" rel="noopener">hallucination</a></span></footer>
-</section>
-<section class="slide" id="s8" data-title="怎麼跟它講話:Prompt 與人設">
-  <div class="inner">
-    <div class="kicker">② 怎麼用模型</div>
-    <h2>怎麼跟它講話:Prompt 與人設</h2>
-    <div class="take"><b>一句話:</b>Prompt 只有兩個重點:正確的資訊 + 清楚的指引。 <span class="cite">S06 p.35</span></div>
-    <ul class="pts"><li><span class="t">寫好 prompt 的兩個要素:資訊(提供需要的正確資訊)與清楚的指引(用什麼格式、風格回答)。</span> <span class="cite">S06 p.35</span></li><li><span class="t">對話其實有三種角色:system 是 ChatGPT 的「人設」、user 是使用者輸入、assistant 是回應。</span> <span class="cite">S06 p.37</span></li><li><span class="t">人設範例「員瑛式思考產生器」:請用員瑛式思考(什麼都正向思維),以第一人稱、社群貼文口吻說為什麼這是超幸運的事,並以「完全是 Lucky Vicky 呀!」結尾。</span> <span class="cite">S06 p.41</span></li><li><span class="t">不會寫也不用擔心:可以和 AI 討論、請它收集資訊;最後請 AI 用 Markdown 整理成完整的 system prompt,並記得自己修改。</span> <span class="cite">S06 p.46</span><span class="cite">S06 p.48</span></li><li><span class="t">一定要讀 AI 生成的東西;例:書名在台灣應為《超譯佛經》《正是時候讀叔本華》,AI 給的不一定對。</span> <span class="cite">S06 p.47</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/prompt-and-system-prompt.html" target="_blank" rel="noopener">prompt-and-system-prompt</a></span></footer>
-</section>
-<section class="slide" id="s9" data-title="讓 AI 看懂你的資料:RAG 與記憶">
-  <div class="inner">
-    <div class="kicker">② 怎麼用模型</div>
-    <h2>讓 AI 看懂你的資料:RAG 與記憶</h2>
-    <div class="take"><b>一句話:</b>RAG = 先找出相關資料,再交給 LLM 回答;是降低錯誤的一個方法。 <span class="cite">S07 p.3</span></div>
-    <ul class="pts"><li><span class="t">RAG(Retrieval-Augmented Generation)被定位為「一個降低錯誤的方法」;媒體標題把它比喻成大型語言模型的「小抄」。</span> <span class="cite">S07 p.3</span><span class="cite">S07 p.4</span></li><li><span class="t">資料可以自己貼進 prompt,但「不能叫電腦找嗎?」RAG 就是讓電腦去找。</span> <span class="cite">S07 p.5</span></li><li><span class="t">關鍵是 embedding 模型:把一段文字轉成向量,是這段文字的特徵代表向量。</span> <span class="cite">S07 p.6</span></li><li><span class="t">流程:文件變成向量 → 問題也變成向量 → 找最接近的放進 prompt → 結果通常不只一筆,可能要重新排序(Reranking)→ 可再補上下文。</span> <span class="cite">S07 p.18</span><span class="cite">S07 p.19</span><span class="cite">S07 p.20</span><span class="cite">S07 p.21</span><span class="cite">S07 p.22</span></li><li><span class="t">短期記憶就是這次對話,太長前面也會忘;長期記憶的一個做法是把過去對話做成向量資料庫(RAG)。</span> <span class="cite">S07 p.32</span><span class="cite">S07 p.33</span></li><li><span class="t">另一條路:CAG,用 KV-Cache 技術把資訊都塞給 LLM(上下文越來越長)。</span> <span class="cite">S07 p.26</span><span class="cite">S07 p.27</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/rag.html" target="_blank" rel="noopener">rag</a> <a href="wiki-site/memory-and-context.html" target="_blank" rel="noopener">memory-and-context</a></span></footer>
-</section>
-<section class="slide" id="s10" data-title="從聊天到做事:AI Agent = Model + Harness">
-  <div class="inner">
-    <div class="kicker">③ 從聊天到做事</div>
-    <h2>從聊天到做事:AI Agent = Model + Harness</h2>
-    <div class="take"><b>一句話:</b>AI Agent = AI Model + Harness:模型負責「想」,Harness 負責「做」。 <span class="cite">S08 p.4</span><span class="cite">S09 p.14</span></div>
-    <ul class="pts"><li><span class="t">LLM 本身只會生成文字:不會打開你的資料夾、不會改檔案、不能自己上網查最新資料。</span> <span class="cite">S09 p.13</span></li><li><span class="t">Model 是大腦,負責想(理解、規劃、判斷、生成);Harness 是工作裝備,負責做,把模型說的「我要開這個檔案」真的執行,再把結果回報給模型。</span> <span class="cite">S09 p.14</span></li><li><span class="t">純聊天是「AI 出一張嘴,事情都你在做」;Agentic 是「你出一張嘴,AI 來完成」。</span> <span class="cite">S09 p.8</span><span class="cite">S09 p.10</span></li><li><span class="t">Harness 的六個組成:工作環境、工具、連接器 MCP、技能 Skills、規則檔(CLAUDE.md / AGENTS.md)、排程。</span> <span class="cite">S09 p.16</span></li><li><span class="t">好的交辦要說清楚三件事:要什麼成品、有什麼限制、怎麼算做完;重點是不要讓 AI 猜。</span> <span class="cite">S09 p.18</span></li><li><span class="t">「員工手冊」:在專案資料夾裡寫一本手冊(CLAUDE.md / AGENTS.md),讓 AI 照著做。</span> <span class="cite">S09 p.22</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/ai-agent-harness.html" target="_blank" rel="noopener">ai-agent-harness</a></span></footer>
-</section>
-<section class="slide" id="s11" data-title="Agent 的設計模式與 Tool Use">
-  <div class="inner">
-    <div class="kicker">③ 從聊天到做事</div>
-    <h2>Agent 的設計模式與 Tool Use</h2>
-    <div class="take"><b>一句話:</b>LLM 不太會做的事(精確計算、實際數據、網路搜尋),就不要再逼它了——這就是【Tool Use】工具呼叫的出發點。 <span class="cite">S08 p.23</span></div>
-    <ul class="pts"><li><span class="t">投影片列出 AI Agents 的四個設計模式(標示吳恩達):Reflection、Tool Use、Planning、Multiagent Collaboration。</span> <span class="cite">S08 p.18</span></li><li><span class="t">Reflection:第一個 LLM 產生初稿,第二個 LLM 評估並給改善建議,再修改,可重覆數次。</span> <span class="cite">S08 p.19</span><span class="cite">S08 p.20</span><span class="cite">S08 p.21</span></li><li><span class="t">Tool Use 例子(飲料店):顧客說「我想訂 20 杯麥茶」;LLM 參與兩個階段——先說出要呼叫的工具 quote_order(&quot;麥茶&quot;, 20),工具回傳 JSON(單價 30、總計 600),再依這些數據回答「沒問題!20 杯麥茶一共 600 元」。</span> <span class="cite">S08 p.24</span><span class="cite">S08 p.26</span><span class="cite">S08 p.27</span><span class="cite">S08 p.29</span></li><li><span class="t">MCP(Anthropic)標準化 LLM 與外部工具、資料來源的互動;A2A(Google)定義代理之間如何交換資訊與協作。</span> <span class="cite">S08 p.31</span></li><li><span class="t">Vibe Coding 適合週末小專案、給自己用的小工具;不適合要正式上線的程式。</span> <span class="cite">S08 p.50</span><span class="cite">S08 p.51</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/tool-use-and-patterns.html" target="_blank" rel="noopener">tool-use-and-patterns</a></span></footer>
-</section>
-<section class="slide" id="s12" data-title="把工作拆成流程:Loop 與 Graph">
-  <div class="inner">
-    <div class="kicker">③ 從聊天到做事</div>
-    <h2>把工作拆成流程:Loop 與 Graph</h2>
-    <div class="take"><b>一句話:</b>先用 Prompt;一直重複同樣的修正就升級成 Loop;各階段標準不同才拆成 Graph。 <span class="cite">S10 p.27</span></div>
-    <ul class="pts"><li><span class="t">做出一版、發現問題、再來一次……「這就是 loop」;只是你自己就是那個 loop。</span> <span class="cite">S10 p.5</span><span class="cite">S10 p.40</span></li><li><span class="t">Loop:把「你一直盯著修」寫成會自己執行的規格,寫一次、跑很多輪。要寫清楚五件事:目標、限制、完成標準、停止條件、觸發。</span> <span class="cite">S10 p.20</span><span class="cite">S10 p.21</span></li><li><span class="t">檢查分兩種:程式檢查(測試過了沒、每頁有沒有出處)與 AI 審查(內容忠於來源嗎);不要叫 AI 審自己的作品,AI 審查要開新對話,只給成品和來源。</span> <span class="cite">S10 p.22</span></li><li><span class="t">Loop 要有剎車:最多改 3 輪、資料不足就停、注意 token 成本。</span> <span class="cite">S10 p.23</span></li><li><span class="t">Graph:流程由人事先畫好,不能跳關,卡住時退回特定一關(像申請流程:系辦 → 院 → 教務處)。</span> <span class="cite">S10 p.24</span></li><li><span class="t">好的 graph 是大圈很少轉、小圈轉得很快;錯誤要在離源頭最近的地方抓到;常常轉大圈,代表檢查該往前移。</span> <span class="cite">S10 p.26</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/loop.html" target="_blank" rel="noopener">loop</a> <a href="wiki-site/graph-workflow.html" target="_blank" rel="noopener">graph-workflow</a></span></footer>
-</section>
-<section class="slide" id="s13" data-title="風險與自保:該注意什麼">
-  <div class="inner">
-    <div class="kicker">③ 從聊天到做事</div>
-    <h2>風險與自保:該注意什麼</h2>
-    <div class="take"><b>一句話:</b>自保:有個資、機密請不要發問;內容正確、品質與侵權由使用者負責。 <span class="cite">S06 p.22</span><span class="cite">S06 p.24</span></div>
-    <ul class="pts"><li><span class="t">AI 的四個風險:濫用(人類有惡意)、錯誤對齊(AI 與人類價值不一致)、錯誤(世界複雜出了沒想到的 bug)、結構性風險(多個 AI Agents 與人類交互)。</span> <span class="cite">S06 p.25</span></li><li><span class="t">使用者要為侵權、內容與文獻是否正確、品質是否符合需求負責。</span> <span class="cite">S06 p.22</span></li><li><span class="t">即使不拿去訓練,雲端保存的對話仍可能因帳號被盜、權限設定或系統漏洞外洩;有個資、機密請不要發問,完全在本機執行可避開這層風險。</span> <span class="cite">S06 p.23</span><span class="cite">S06 p.24</span></li><li><span class="t">更要小心不一定故意做的:DeepSeek 沒公開訓練資料,簡體中文比例可預期更高,會潛移默化影響常使用的人。</span> <span class="cite">S06 p.29</span></li><li><span class="t">「推理能力強」也是危機:加上思考的模型遇到 H-CoT(劫持思維鏈)攻擊,只有 2% 會拒絕回應(對照:原本 98% 會拒絕)。</span> <span class="cite">S06 p.30</span></li><li><span class="t">負責任使用七點:辨識生成內容的真實性、資料與隱私、著作權、偏見與公平性、批判性思考、避免惡意用途、永續與環境倫理。</span> <span class="cite">S06 p.32</span></li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/ai-risks.html" target="_blank" rel="noopener">ai-risks</a></span></footer>
-</section>
-<section class="slide" id="s14" data-title="回顧:自己的知識庫 —— LLM Wiki">
-  <div class="inner">
-    <div class="kicker">回顧</div>
-    <h2>回顧:自己的知識庫 —— LLM Wiki</h2>
-    <div class="take"><b>一句話:</b>你找的資料放進 raw,由 AI 整理、維護成 wiki。 <span class="cite">S09 p.33</span><span class="cite">S07 p.40</span></div>
-    <ul class="pts"><li><span class="t">Karpathy 的做法:你找的資料放進 raw → 教 AI 產生 wiki 檔(含 index.md),打造自己的 Wikipedia。</span> <span class="cite">S09 p.33</span></li><li><span class="t">Wiki 的資料都由 LLM 撰寫並維護,作者很少直接動手修改。</span> <span class="cite">S07 p.40</span></li><li><span class="t">例子 Farzapedia:由多年日記整理成的個人化 wikipedia,畫面顯示 417 articles across 41 categories。</span> <span class="cite">S09 p.35</span><span class="cite">S07 p.48</span></li><li><span class="t">「先討論,後生成」:先讓 AI 訪談(一次一題、約 8-10 題,先不建任何檔案),整理需求摘要確認後,才生成 AGENTS.md 與資料夾。</span> <span class="cite">S10 p.29</span><span class="cite">S10 p.31</span></li><li><span class="t">(回顧)模型 = 呆萌函數 + 猜下一個字;使用 = 好 prompt + RAG;Agent = 模型 + Harness,再用 Loop / Graph 設計流程。</span> </li><li><span class="t">(說明)這份簡報本身就是這樣做出來的:10 份投影片 → LLM Wiki → 每頁只引用 wiki 內有出處的內容;流程見 README。</span> </li></ul>
-  </div>
-  <footer><span>依據 wiki:<a href="wiki-site/llm-wiki.html" target="_blank" rel="noopener">llm-wiki</a> <a href="wiki-site/index.html" target="_blank" rel="noopener">index</a></span></footer>
-</section>
-<div id="toc"><select id="sel" aria-label="跳到某一頁"></select></div>
-<div class="nav"><button id="prev" aria-label="上一頁">←</button><button id="next" aria-label="下一頁">→</button></div>
+:root{--bg:#070b14;--bg2:#0d1424;--panel:#111a2e;--panel2:#16213a;--line:#233152;--fg:#e6edf7;--mut:#8a98b5;
+--cy:#22d3ee;--vi:#a78bfa;--ok:#34d399;--bad:#fb7185;--glow:0 0 0 1px rgba(34,211,238,.35),0 0 24px rgba(34,211,238,.12)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(1200px 600px at 80% -10%,rgba(167,139,250,.14),transparent 60%),radial-gradient(900px 500px at -10% 10%,rgba(34,211,238,.10),transparent 55%),var(--bg);
+color:var(--fg);font:16px/1.75 system-ui,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;min-height:100vh}
+a{color:var(--cy)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+.wrap{max-width:980px;margin:0 auto;padding:28px 16px 64px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.tag{color:var(--cy);font-size:12px;letter-spacing:.18em}
+h1{font-size:clamp(26px,4.4vw,44px);line-height:1.2;margin:.15em 0 .25em;background:linear-gradient(90deg,var(--cy),var(--vi));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);margin:0 0 20px}
+.stat{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:14px;color:var(--mut)}
+.chip b{color:var(--fg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;justify-content:flex-start;text-align:left;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--fg);cursor:pointer;font:inherit;transition:transform .15s,border-color .15s,box-shadow .15s}
+.card:hover,.card:focus-visible{transform:translateY(-2px);border-color:var(--cy);box-shadow:var(--glow);outline:none}
+.card .lv{font-size:12px;color:var(--cy);letter-spacing:.14em}
+.card h3{margin:.2em 0 .3em;font-size:18px;line-height:1.35}
+.card p{margin:0 0 14px;color:var(--mut);font-size:14px;line-height:1.6;flex:1}
+.bar{height:6px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cy),var(--vi));width:0}
+.st{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-top:8px}
+.st .done{color:var(--ok)}
+.panel{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:clamp(16px,3vw,28px)}
+.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.btn{background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:8px 16px;font:inherit;cursor:pointer}
+.btn:hover,.btn:focus-visible{border-color:var(--cy);outline:none}
+.btn.pri{background:linear-gradient(90deg,#0891b2,#7c3aed);border-color:transparent;color:#fff}
+.segs{display:flex;gap:6px;margin:6px 0 18px}
+.segs i{flex:1;height:6px;border-radius:99px;background:var(--bg2)}
+.segs i.cur{background:var(--cy)}.segs i.ok{background:var(--ok)}.segs i.bad{background:var(--bad)}
+.q{font-size:clamp(18px,2.6vw,24px);line-height:1.5;margin:0 0 16px;font-weight:600}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--fg);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled),.opt:focus-visible{border-color:var(--cy);outline:none}
+.opt .k{flex:none;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;font-size:13px;color:var(--mut)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:rgba(52,211,153,.10)}.opt.right .k{background:var(--ok);color:#04130d;border-color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:rgba(251,113,133,.10)}.opt.wrong .k{background:var(--bad);color:#1b0509;border-color:var(--bad)}
+.opt.dim{opacity:.55}
+.exp{margin-top:16px;border-left:4px solid var(--vi);background:rgba(167,139,250,.08);border-radius:0 12px 12px 0;padding:14px 16px}
+.exp .v{font-weight:700;margin-bottom:4px}.exp .v.ok{color:var(--ok)}.exp .v.bad{color:var(--bad)}
+.exp p{margin:.3em 0}
+.cite{display:inline-block;font:12px/1.6 ui-monospace,Menlo,monospace;color:var(--cy);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:0 6px;margin:2px 4px 2px 0}
+.note{color:var(--mut);font-size:13px;margin-top:8px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.big{font-size:clamp(40px,8vw,72px);font-weight:800;line-height:1;background:linear-gradient(90deg,var(--cy),var(--vi));-webkit-background-clip:text;background-clip:text;color:transparent}
+.rv{margin:12px 0 0;padding:12px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px}
+.rv b{color:var(--bad)}.rv span.a{color:var(--ok)}
+.foot{margin-top:28px;color:var(--mut);font-size:13px}
+.hide{display:none!important}
+</style></head><body>
+<div class="wrap">
+ <section id="home">
+  <div class="top"><span class="tag mono">GENERATIVE AI · QUEST</span><span class="chip mono" id="total"></span></div>
+  <h1>生成式 AI 闖關問答</h1>
+  <p class="sub">10 個關卡對應課程 10 個單元,每關 5 題。自己選關卡,答完每題都有解析與出處。</p>
+  <div class="stat" id="stat"></div>
+  <div class="grid" id="grid"></div>
+  <p class="foot">題目與解析整理自 <a href="wiki-site/index.html">LLM Wiki</a>(每個答案都標出處,例如 <span class="cite">S06 p.16</span> = 第 06 份投影片第 16 頁);錯誤選項是出題時編寫的常見誤解,不出自 wiki。
+  · <a href="https://github.com/circleO-O/genai-intro-wiki-deck">GitHub</a></p>
+ </section>
+ <section id="play" class="hide"></section>
+</div>
 <script>
 (function(){
-  var slides=[].slice.call(document.querySelectorAll('.slide')),i=0,sel=document.getElementById('sel');
-  slides.forEach(function(s,k){var o=document.createElement('option');o.value=k;o.textContent=(k+1)+'. '+s.dataset.title;sel.appendChild(o)});
-  function go(k){i=Math.max(0,Math.min(slides.length-1,k));slides.forEach(function(s,j){s.classList.toggle('on',j===i)});
-    sel.value=i;document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
-    slides[i].querySelector('.inner').scrollTop=0;try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
-  document.getElementById('prev').onclick=function(){go(i-1)};
-  document.getElementById('next').onclick=function(){go(i+1)};
-  sel.onchange=function(){go(+sel.value)};
-  document.addEventListener('keydown',function(ev){
-    if(ev.target===sel)return;
-    if(['ArrowRight','PageDown',' '].indexOf(ev.key)>-1){ev.preventDefault();go(i+1)}
-    if(['ArrowLeft','PageUp'].indexOf(ev.key)>-1){ev.preventDefault();go(i-1)}
-    if(ev.key==='Home')go(0);if(ev.key==='End')go(slides.length-1)});
-  var tx=0;document.addEventListener('touchstart',function(ev){tx=ev.touches[0].clientX});
-  document.addEventListener('touchend',function(ev){var d=ev.changedTouches[0].clientX-tx;if(Math.abs(d)>60)go(i+(d<0?1:-1))});
-  var h=parseInt(location.hash.slice(1),10);go(h>0?h-1:0);
+var LEVELS=[{"id": 1, "unit": "01", "title": "不焦慮地學 AI", "blurb": "先弄懂「為什麼不用怕」:AI 模型到底是什麼樣的東西。", "wiki": ["neural-network", "ai-agent-harness"], "questions": [{"q": "講者怎麼回應「學 AI 感覺好難」這個焦慮?", "o": ["先把所有程式語言與數學學到精通,才適合開始接觸 AI Agent", "AI Agent 其實只是「教 AI 做事的方法」", "AI Agent 其實是需要大量程式功力才能駕馭的複雜系統", "學 AI 的焦慮是多慮,因為 AI 很快就會取代這些工作"], "a": 1, "e": "講者說學 AI 的焦慮之一是「感覺好難」,他的回應是:AI Agent 其實只是「教 AI 做事的方法」。", "c": ["S01 p.42"]}, {"q": "課程的特色之一是什麼?", "o": ["背下所有 AI 工具的操作步驟", "只教付費的雲端服務", "用原理對抗焦慮", "先修完高等數學才開始上課"], "a": 2, "e": "課程特色之一是「用原理對抗焦慮」;另一個特色是「教 AI 用你的方法做事」。", "c": ["S01 p.38"]}, {"q": "講者把現代 AI 模型比喻成什麼?", "o": ["全知全能的老師", "呆萌型 AI 機器人", "會自己決定目標的機器人", "一座大型資料庫"], "a": 1, "e": "講者把模型比喻成「呆萌型 AI 機器人」:你要告訴它輸入是什麼、輸出長什麼樣子;它不會分析,沒有意識,不知道自己在做什麼。", "c": ["S01 p.45", "S02 p.3"]}, {"q": "課程裡的八哥辨識例子:輸入一張照片,AI 的輸出其實是什麼?", "o": ["一段文字,描述這是土八哥、白尾八哥或家八哥", "一張畫了框的照片,框住土八哥、白尾八哥或家八哥", "三個數字,分別對應土八哥、白尾八哥、家八哥", "單一個「是八哥」或「不是八哥」的判斷,不分品種"], "a": 2, "e": "輸入是一張照片,輸出其實是三個數字,分別對應土八哥、白尾八哥、家八哥。", "c": ["S01 p.46", "S01 p.48", "S02 p.11"]}, {"q": "課程怎麼看待生成式 AI 與八哥辨識這類 AI?", "o": ["生成式 AI 也是呆萌型機器人:要先告訴它輸入與輸出", "生成式 AI 與辨識型 AI 原理完全不同,必須分開從頭學", "生成式 AI 不需要被告知輸入與輸出,會自己決定做什麼", "只有辨識型 AI 是呆萌型機器人,需要先被告知輸入輸出"], "a": 0, "e": "課程說生成式 AI 也是這種呆萌型機器人;呆萌型機器人的特點就是要先告訴它輸入是什麼、輸出長什麼樣子。", "c": ["S01 p.49", "S01 p.45"]}]}, {"id": 2, "unit": "02", "title": "神經網路與函數學習機", "blurb": "AI 怎麼把照片變成答案?從輸入輸出到神經元與梯度下降。", "wiki": ["neural-network", "loss-and-gradient-descent"], "questions": [{"q": "課程把 AI 模型看成什麼?", "o": ["一個會自己思考的大腦", "一本記錄所有答案的巨大字典", "一套人事先寫死的固定規則清單", "一台函數學習機 f_θ"], "a": 3, "e": "模型被比喻成「呆萌型 AI 機器人」,本質是函數學習機 f_θ:被告知輸入與輸出的樣子,再學出中間的對應。", "c": ["S02 p.3"]}, {"q": "電腦要處理一張彩色圖片,輸入必須先變成什麼?", "o": ["數字(張量),彩色圖片有 R、G、B 三個通道", "文字(標籤),彩色圖片會先被轉成一段描述文字", "圖片本身即可,不必轉成數字,電腦能直接看懂像素", "單一個數字(平均亮度),彩色圖片只有一個通道"], "a": 0, "e": "輸入與輸出都必須是數據(一堆數字),更精確地說是張量;圖片有 R、G、B 三個通道。", "c": ["S02 p.9", "S02 p.10"]}, {"q": "三種八哥的類別用 one-hot encoding 表示,「土八哥」是哪一個?", "o": ["[0, 0, 1]", "[1, 0, 0]", "[1, 1, 1]", "[0, 1, 0]"], "a": 1, "e": "one-hot 編碼:土八哥 [1,0,0]、白尾八哥 [0,1,0]、家八哥 [0,0,1]。", "c": ["S02 p.12"]}, {"q": "神經元算出加權總和之後,為什麼還要經過激發函數?", "o": ["為了把神經元的輸出轉成文字,再送給下一層讀取", "為了減少神經元的數量,讓網路變小而計算更快", "前面的計算都是線性的,需經激發函數轉換再送出", "為了讓權重不需要再被學習,直接固定成預設值"], "a": 2, "e": "投影片說:目前的計算都是線性的,因此需經一個激發函數 φ 轉換再送出,即 φ(Σ w_i x_i + b) = h。", "c": ["S02 p.36"]}, {"q": "梯度下降裡,切線斜率指的方向是哪個方向?", "o": ["(局部)極小值的方向,所以要順著斜率的方向走", "隨機的方向,所以每次都要重新亂數決定走法", "(局部)極大值的方向,所以要往相反方向走", "learning rate 決定的方向,所以要調整學習率來轉向"], "a": 2, "e": "投影片原文:切線斜率指的方向和我們應該要走的極小值方向是相反的,事實上它正是(局部)極大值的方向。", "c": ["S02 p.87"]}]}, {"id": 3, "unit": "03", "title": "AI 為什麼每次都不一樣", "blurb": "同一個問題,為什麼答案會變?機率、抽樣與誤差的算法。", "wiki": ["softmax-and-sampling", "loss-and-gradient-descent"], "questions": [{"q": "語言模型每次生成的內容會不一樣,主要原因是什麼?", "o": ["每次回答前都會用新資料重新訓練一次", "網路速度不穩定,造成每次傳回的內容不同", "每次使用的模型大小不同,所以回答也不同", "依機率抽字,而不是永遠選最高分"], "a": 3, "e": "語言模型就是用機率抽字:看前面的字,猜下一個字。若永遠選最高分,同樣輸入就永遠得到同樣輸出。", "c": ["S03 p.93", "S03 p.94", "S03 p.96"]}, {"q": "八哥辨識輸出 [0.6, 0.3, 0.1],若依機率抽,抽到「家八哥」的機會大約是?", "o": ["60%", "30%", "0%,因為它不是最高分", "10%"], "a": 3, "e": "依機率抽就是 60% 土八哥、30% 白尾八哥、10% 家八哥,所以抽到家八哥約 10%。", "c": ["S03 p.94"]}, {"q": "課程說,哪一種應用「依機率抽」比「永遠選最高分」更有道理?", "o": ["身分證號碼辨識系統", "計算店員找零的收銀系統", "咖啡豆處理法推薦 AI", "判斷照片是不是八哥的辨識 AI"], "a": 2, "e": "八哥辨識依機率抽好像沒道理,但若是咖啡豆處理法推薦 AI,依機率抽就比較有道理。", "c": ["S03 p.95"]}, {"q": "創作型 AI(如 GAN)還有另一個隨機來源,是什麼?", "o": ["輸入一個隨機抽出的 latent tensor z", "使用者每次輸入提示詞時打字的快慢與停頓長短,影響生成結果", "每次生成前都隨機更換模型最後一層所使用的激發函數種類", "螢幕亮度與顯示器色差造成圖片像素的隨機變化"], "a": 0, "e": "創作型 AI 的輸入是一個 latent tensor z(「天馬行空的想法」),在 GAN 中隨機抽 z 就是隨機性的來源。", "c": ["S03 p.6", "S03 p.7", "S03 p.9"]}, {"q": "輸出 [0.6, 0.3, 0.1] 與正確答案 [1, 0, 0] 的均方差(MSE)是多少?", "o": ["0.26", "0.10", "0.40", "0.60"], "a": 0, "e": "(1−0.6)² + (0−0.3)² + (0−0.1)² = 0.16 + 0.09 + 0.01 = 0.26。投影片同頁另一組 [0.6, 0.2, 0.2] 的結果是 0.24。", "c": ["S03 p.62"]}]}, {"id": 4, "unit": "04", "title": "LLM 只是在猜下一個字?", "blurb": "語言模型的核心:看前面的字,猜下一個字。", "wiki": ["next-token-prediction", "softmax-and-sampling"], "questions": [{"q": "文字生成 AI(LLM)的核心是什麼?", "o": ["一個資料庫:把問題比對後,查出整句現成的答案", "一個編譯器:把問題翻成程式碼,再交給電腦執行", "一個爬蟲:從網路上即時複製現成的文章來拼湊", "一個函數 f_θ:看到前面的字,輸出下一個字"], "a": 3, "e": "LLM 的核心是函數 f_θ:輸入目前的字 x_t,輸出下一個字 x_{t+1},並被訓練成「很會接話」。", "c": ["S04 p.8"]}, {"q": "把「炎龍老師很帥」拆成「輸入—答案」配對,第一組是?", "o": ["(炎龍老師, 很帥)", "(炎, 龍)", "(龍, 炎)", "(很, 帥)"], "a": 1, "e": "拆成 (炎,龍)、(龍,老)、(老,師)、(師,很)、(很,帥):每個字的答案是它後面的那一個字。", "c": ["S04 p.9"]}, {"q": "為什麼只看「一個字」來猜下一個字會出問題?", "o": ["同一個字可能有不同答案,就不是函數", "電腦的記憶體無法儲存單一個字的編號", "單一個字沒有編號,所以無法轉成數字輸入", "中文必須固定用兩個字一組,否則無法訓練"], "a": 0, "e": "用「今天天氣很好。」訓練,輸入「天」會同時有「天」和「氣」兩個答案,這樣就不是函數。", "c": ["S04 p.10"]}, {"q": "為了解決這個問題,模型除了目前的字,還要輸入什麼?", "o": ["整個網路目前所有層的權重與偏差值向量,連同學習率一起輸入", "前面字融合成的記憶向量 h_{t-1}", "使用者的姓名與帳號等個人身分資訊,讓模型記得是誰在問", "下一個字的標準答案,讓模型直接照抄"], "a": 1, "e": "要讓模型「有記憶」:除了目前的字,還要把前面的字融合成一個記憶向量(h_{t-1})一起輸入。", "c": ["S04 p.11"]}, {"q": "temperature τ 調整抽字時的隨機程度,下列何者正確?", "o": ["τ > 1 時機率拉開(更固定),τ < 1 時機率拉近(更隨機)", "τ 只影響輸出字數的長短,與抽字的隨機程度完全無關", "τ 必須固定等於 0,模型才能順利抽字並輸出文字", "τ > 1 時機率拉近(更隨機),τ < 1 時機率拉開(更固定)"], "a": 3, "e": "公式 a' = e^(a/τ):τ > 1 會拉近彼此的機率(更隨機);τ < 1 機率更拉開(生成文字更固定)。", "c": ["S04 p.56"]}]}, {"id": 5, "unit": "05", "title": "AI 怎麼記得前面說過什麼", "blurb": "從 RNN 到注意力機制與 Transformer。", "wiki": ["attention-transformer", "memory-and-context"], "questions": [{"q": "Transformer 是在哪一年、為了什麼目的提出的?", "o": ["2017 年 Google 的 “Attention is All you Need”,主要想取代 CNN", "2022 年 OpenAI 的 “Attention is All you Need”,主要想取代資料庫", "2010 年 Google 的 “Attention is All you Need”,主要想做圖片壓縮", "2017 年 Google 的 “Attention is All you Need”,主要想取代 RNN"], "a": 3, "e": "2017 年 Google 發表 “Attention is All you Need”,主要想取代 RNN。", "c": ["S05 p.16"]}, {"q": "注意力機制的搜尋式比喻中,q、k、v 分別像什麼?", "o": ["q 是「答案」,k、v 是「問題」,輸出 h 是適合這個答案的結果", "q 是「問題」,k、v 是「先備知識」,輸出 h 是適合這個問題的結果", "q、k、v 都是同一份先備知識,輸出 h 是每個字的位置編碼", "q 是訓練資料,k 是 loss,v 是學習率,輸出 h 是梯度"], "a": 1, "e": "給定先備知識(k、v),輸入問題 q,輸出適合這個問題的結果 h。", "c": ["S05 p.17"]}, {"q": "Transformer 為什麼需要 position encoding(位置編碼)?", "o": ["為了減少參數量,讓模型把整串字壓縮成較少的位置向量", "為了讓圖片也能當成輸入,把像素位置資訊轉成文字", "為了加快 softmax 的計算,把每個字依位置先排序好再輸入", "它一次處理整串字,字的先後順序沒被考慮,要把位置資訊加進去"], "a": 3, "e": "RNN 一個字一個字讀;Transformer 為了平行化一次做 self-attention,字的先後順序沒有真的被考慮,所以要把位置資訊加到 embedding。", "c": ["S05 p.42"]}, {"q": "投影片用什麼比喻說明 sin / cos 位置編碼?", "o": ["像時鐘上的指針:低位元的轉得快、高位元的轉得慢", "像地圖上的經緯度:低位元代表緯度、高位元代表經度", "像鋼琴的黑白鍵:低位元按黑鍵、高位元按白鍵", "像交通號誌的紅綠燈:低位元亮紅燈、高位元亮綠燈"], "a": 0, "e": "十進位數字越高位數變化越慢;sin / cos 成對,像時鐘上的指針,位元低的時鐘快、位元高的時鐘慢。", "c": ["S05 p.43", "S05 p.49"]}, {"q": "原始論文為什麼要把 attention 分數除以 √d_k?", "o": ["因為除以 √d_k 之後輸出才會變成整數,方便查表", "因為 softmax 會把權重低的放大過頭,所以先縮放壓抑弱者", "為了讓矩陣變小以節省記憶體,這樣就能完全跳過 softmax", "因為 softmax 贏者通吃,會把權重高的放大過頭,所以先縮放"], "a": 3, "e": "講者說 softmax 是「贏者通吃」,會讓權重高的被放大過頭,所以先除以 τ = √d_k。數例:除之前 61%、30%、3%、2%、4%,除之後 40%、29%、11%、8%、11%。", "c": ["S05 p.31", "S05 p.32", "S05 p.33"]}]}, {"id": 6, "unit": "06", "title": "打造自己的對話機器人", "blurb": "怎麼下好 prompt,以及該注意的幻覺與隱私。", "wiki": ["prompt-and-system-prompt", "hallucination", "ai-risks"], "questions": [{"q": "課程說,寫好 prompt 的兩個要素是什麼?", "o": ["長度與修辭:prompt 越長、用字越華麗越好", "資訊(正確的資訊)與清楚的指引", "語言與符號:固定使用英文並加上表情符號", "關鍵字與簡短:只寫一個關鍵字讓 AI 自己補完"], "a": 1, "e": "Prompt 兩要素:資訊(提供需要的正確資訊)與清楚的指引(例如用什麼格式、風格回答)。", "c": ["S06 p.35"]}, {"q": "對話中的三種角色 system、user、assistant,其中 system 是什麼?", "o": ["使用者輸入的問題或 prompt", "ChatGPT 對使用者的回應內容", "ChatGPT 的「人設」", "電腦底層的作業系統核心"], "a": 2, "e": "system 是 ChatGPT 的「人設」,user 是使用者的輸入(prompt),assistant 是 ChatGPT 的回應。", "c": ["S06 p.37"]}, {"q": "引用 Karpathy 的說法,「幻覺」是什麼?", "o": ["不是錯誤,而是 LLM 最偉大的特點;LLM 是「作夢的機器」", "是嚴重的錯誤,只要換更大的模型就能完全消除", "只會出現在圖片生成模型,文字生成的 LLM 不會有幻覺", "是使用者的錯覺,AI 本身不會出錯,所以不必檢查內容"], "a": 0, "e": "Karpathy:LLM 沒有「幻覺問題」,幻覺不是錯誤,而是 LLM 最偉大的特點。搜尋引擎是 0% 的夢境(不會創造),LLM 則是作夢的機器。", "c": ["S06 p.16"]}, {"q": "講者說最重要的 AI 使用技巧是什麼?", "o": ["把所有問題都丟給 AI 就好", "只用英文提問", "每次都重新開一個帳號", "一定要讀它寫了什麼"], "a": 3, "e": "AI 生成的都是「幻覺」,要用自己的專業判斷合不合適;沒有寫錯不代表寫對了我們的意思,所以一定要讀它寫了什麼。", "c": ["S06 p.33"]}, {"q": "關於隱私,下列哪個說法符合課程內容?", "o": ["只要不拿去訓練,雲端保存的對話就絕對安全,不會外洩", "即使不拿去訓練,雲端保存的對話仍可能因帳號被盜或系統漏洞外洩", "對話一結束,雲端就會自動永久刪除,不會留下任何紀錄", "只有付費帳號才會有隱私問題,免費帳號的對話一律安全"], "a": 1, "e": "即使完全不拿去訓練,雲端保存的原始對話仍可能因帳號被盜、權限設定或系統漏洞外洩;有個資、機密請不要發問。", "c": ["S06 p.23", "S06 p.24"]}]}, {"id": 7, "unit": "07", "title": "讓 AI 看懂你的世界", "blurb": "RAG 與記憶:怎麼讓 AI 拿到它不知道的資料。", "wiki": ["rag", "memory-and-context"], "questions": [{"q": "課程把 RAG 定位成什麼?", "o": ["一種取代神經網路的新演算法,媒體比喻成 LLM 的「大腦」", "一種圖片壓縮技術,媒體比喻成 LLM 的「壓縮檔」", "一種降低錯誤的方法,媒體比喻成 LLM 的「小抄」", "專門用來加速訓練的硬體,媒體比喻成 LLM 的「引擎」"], "a": 2, "e": "RAG 被定位為「一個降低錯誤的方法」;媒體標題把它比喻成大型語言模型的「小抄」。", "c": ["S07 p.3", "S07 p.4"]}, {"q": "RAG 裡的 embedding 模型做什麼?", "o": ["把向量翻譯回英文,讓模型能閱讀檢索到的資料", "把一段文字轉成向量,作為這段文字的特徵代表", "把重複的文字刪掉,只留下一份給模型閱讀", "替每段文字加上標點符號,方便模型斷句理解"], "a": 1, "e": "關鍵是找一個 embedding 模型:把一段文字轉成某維度的向量,這個向量是該段文字的特徵代表向量。", "c": ["S07 p.6"]}, {"q": "下列哪一個是投影片描述的 RAG 流程順序?", "o": ["問題變向量 → 直接交給 LLM 生成答案 → 不需要任何文件資料就結束", "文件變向量 → 問題變向量 → 把最不相近的放進 prompt →(可能)重新訓練模型", "先微調模型 → 再重新訓練整個網路 → 把全部資料貼進 prompt → 再上線服務", "文件變向量 → 問題變向量 → 找最接近的放進 prompt →(可能)重新排序 Reranking"], "a": 3, "e": "每段文字經模型得到代表向量 → 問題經同一個模型得到 q → 比較 q 與各向量找最接近的放進 prompt → 找出的資料通常不只一筆,可能需要重新排序(Reranking)→ 可再補上下文。", "c": ["S07 p.18", "S07 p.19", "S07 p.20", "S07 p.21", "S07 p.22"]}, {"q": "課程提到的長期記憶,其中一個做法是什麼?", "o": ["把過去的對話全部刪掉,之後只靠模型自己的猜測來記得使用者", "讓模型自己忘掉舊資料,只保留最近一輪的對話", "把過去完整的對話做成向量資料庫(RAG)", "把過去的對話都存成圖片,再讓模型逐張看圖回想"], "a": 2, "e": "短期記憶是這次的對話(太長前面也會忘);長期記憶的一個做法是把過去完整的對話做成向量資料庫。", "c": ["S07 p.32", "S07 p.33"]}, {"q": "「話說回來真的要 RAG 嗎?」投影片介紹的另一條路是?", "o": ["RAG 加強版:用更多次檢索把資訊一段一段塞給 LLM", "刪掉所有外部資料,讓 LLM 只靠訓練時的記憶回答", "CAG:用 KV-Cache 技術把資訊都塞給 LLM", "改成用人工逐筆查資料,再手動貼給 LLM 閱讀"], "a": 2, "e": "因為上下文越來越長,投影片介紹 CAG:用 KV-Cache 技術把資訊都塞給 LLM(引用論文《Don't Do RAG: When Cache-Augmented Generation is All You Need for Knowledge Tasks》)。", "c": ["S07 p.26", "S07 p.27"]}]}, {"id": 8, "unit": "08", "title": "教 AI 做事的方法", "blurb": "AI Agent 是什麼、四種設計模式、工具呼叫。", "wiki": ["ai-agent-harness", "tool-use-and-patterns"], "questions": [{"q": "課程怎麼定義 AI Agent?", "o": ["AI Model + Harness", "一個參數量更大、訓練資料更多的 AI Model", "AI Model + 更多訓練資料與更快顯卡", "一個專門用來聊天的對話視窗程式"], "a": 0, "e": "AI Agent = AI Model + Harness。", "c": ["S08 p.4"]}, {"q": "Reflection(反思)設計模式是怎麼運作的?", "o": ["第一個 LLM 產生初稿,第二個 LLM 評估並給改善建議,第一個再修改,可重覆數次", "兩個 LLM 同時各寫一份答案,再由第三個 LLM 選出比較長的那一份", "第一個 LLM 產生初稿後交給人類全部重寫,LLM 只負責檢查錯字", "第一個 LLM 產生初稿,第二個 LLM 直接刪掉並重寫,雙方不互相評估"], "a": 0, "e": "第一個 LLM 產生初稿,第二個 LLM 進行評估、提供改善建議,然後第一個 LLM 進行修改,可重覆數次;「評論員」可用不同模型。", "c": ["S08 p.19", "S08 p.20", "S08 p.21"]}, {"q": "飲料店例子裡,為什麼要呼叫工具 quote_order(「麥茶」, 20)?", "o": ["因為工具比較便宜,而且 LLM 自己回答一定比較慢", "因為 LLM 不太會做精確計算、實際數據這類事,就交給工具", "因為 LLM 看不懂中文,必須先由工具把中文翻成英文", "因為顧客明確要求使用工具,LLM 才被允許回答價格"], "a": 1, "e": "LLM 不太會做精確計算、實際數據、網路搜尋,就不要再逼它。工具回傳 JSON(單價 30、總計 600),LLM 再據此回答「沒問題!20 杯麥茶一共 600 元」。", "c": ["S08 p.23", "S08 p.24", "S08 p.26", "S08 p.27", "S08 p.29"]}, {"q": "MCP 和 A2A 的差別是什麼?", "o": ["MCP(Google)標準化代理之間如何溝通協作;A2A(Anthropic)標準化 LLM 與外部工具的互動", "MCP 與 A2A 都是用來訓練模型的資料格式,差別只在支援的程式語言種類不同", "MCP(Anthropic)標準化 LLM 與外部工具、資料來源的互動;A2A(Google)定義代理之間如何溝通協作", "MCP 規範單一 Agent 如何管理自己的記憶體;A2A 規範使用者如何登入 Agent 的帳號"], "a": 2, "e": "MCP 與外部世界溝通(單一 Agent 如何使用外部工具);A2A 是代理之間溝通(交換資訊、協作和協調)。", "c": ["S08 p.31"]}, {"q": "Vibe Coding 適合用在哪裡?", "o": ["要正式上線、給大量使用者付費使用的商業程式,不必再檢查", "不需要檢查程式碼也不會出事的銀行與金融系統", "任何情況都適用,可以完全取代工程師的所有工作", "週末好玩的小專案、給自己用且出錯不會怎樣的小工具"], "a": 3, "e": "適合:週末好玩的小專案、給自己用且出錯不會怎樣的小工具、試做原型。不適合:要正式上線的程式,或不檢查可能出亂子的程式。", "c": ["S08 p.50", "S08 p.51"]}]}, {"id": 9, "unit": "09", "title": "換你當老闆", "blurb": "從「問問題」到「交辦工作」:Harness 與好的交辦。", "wiki": ["ai-agent-harness"], "questions": [{"q": "LLM 本身「做不到」下列哪件事?", "o": ["生成一段符合上下文語意的文字", "根據問題內容生成一段回答", "自己打開你的資料夾、改檔案", "把一段話翻譯成另一種語言文字"], "a": 2, "e": "LLM 本身只會生成文字:不會打開你的資料夾、不會建資料夾或改檔案、不能自己上網查最新資料。", "c": ["S09 p.13"]}, {"q": "Model 與 Harness 的分工是?", "o": ["Model 是工作裝備負責做,Harness 是大腦負責想", "Model 是大腦負責想,Harness 是工作裝備負責做", "Model 負責儲存檔案與排程,Harness 負責理解與生成文字", "兩者都負責思考與判斷,只是 Harness 的參數量比較大"], "a": 1, "e": "Model 是大腦,負責想(理解、規劃、判斷、生成);Harness 是工作裝備,負責做,把模型說的「我要開這個檔案」真的執行,再把結果回報給模型。", "c": ["S09 p.14"]}, {"q": "下列哪一項是 Harness 的六個組成之一?", "o": ["規則檔(CLAUDE.md / AGENTS.md)", "更大的模型參數量與訓練資料量", "更快的網路與更好的顯示器", "訓練用的損失函數(loss function)與學習率"], "a": 0, "e": "Harness 六個組成:工作環境、工具、連接器 MCP、技能 Skills、規則檔(CLAUDE.md / AGENTS.md,每次上工前先讀)、排程。", "c": ["S09 p.16"]}, {"q": "一次好的交辦,要說清楚哪三件事?", "o": ["時間、地點、天氣預報與交通方式", "AI 的名字、顏色、性格與說話口氣", "要什麼成品、有什麼限制、怎麼算做完", "用哪個模型、幾個參數、花多少錢"], "a": 2, "e": "好的交辦通常要說清楚三件事:要什麼成品、有什麼限制(哪些可以動、哪些不能動)、怎麼算做完(怎麼驗收);重點是不要讓 AI 猜測。", "c": ["S09 p.18"]}, {"q": "課程說的「員工手冊」是什麼?", "o": ["專案資料夾裡的 CLAUDE.md / AGENTS.md,讓 AI 照著做", "專案資料夾裡的 README.md,是寫給使用者看的操作說明書,AI 不會讀", "模型的原始訓練資料,存放在專案資料夾裡讓 AI 照著學", "一份只有標題、內容留白的空檔案,等 AI 自己填寫後才生效"], "a": 0, "e": "在專案資料夾裡寫一本「員工手冊」,Claude 專用叫 CLAUDE.md、通用叫 AGENTS.md,讓 AI 照著做。", "c": ["S09 p.22"]}]}, {"id": 10, "unit": "10", "title": "把工作拆成 AI 能做的流程", "blurb": "Loop 與 Graph:讓流程自己跑、自己檢查。", "wiki": ["loop", "graph-workflow", "llm-wiki"], "questions": [{"q": "一個 loop 要寫清楚哪五件事?", "o": ["目標、限制、完成標準、停止條件、觸發", "標題、副標題、作者、發表日期、頁碼數量", "輸入、輸出、損失、梯度、學習率大小", "速度、價格、品牌、外觀顏色、尺寸大小"], "a": 0, "e": "一個 loop 要寫清楚五件事:目標(要什麼成品)、限制(哪些不能動)、完成標準、停止條件(做不到時何時停手)、觸發(什麼時候開始跑)。", "c": ["S10 p.21"]}, {"q": "loop 的檢查分哪兩種?AI 審查要怎麼做?", "o": ["只有人工檢查一種;AI 審查要讓同一個 AI 在原對話裡審自己的作品", "程式檢查與 AI 審查;AI 審查要在原對話裡,讓 AI 審自己的作品", "人工檢查與 AI 審查;AI 審查只給成品,不給來源,以免被來源影響", "程式檢查與 AI 審查;AI 審查要開新的對話,只給成品和來源"], "a": 3, "e": "檢查分程式檢查(測試過了沒、連結斷了沒、每頁有沒有出處)與 AI 審查(內容有沒有忠於來源)。不要叫 AI 審自己的作品,AI 審查要開新的對話,只給成品和來源。", "c": ["S10 p.22"]}, {"q": "課程說 loop 要有哪些剎車?", "o": ["不需要剎車,讓它一直跑到 AI 自己覺得完成為止", "最多改 3 輪、資料不足就停、要注意 token 成本", "每分鐘固定重啟一次,資料不足時就用自己的知識補齊", "只有人在旁邊盯著時才能跑,而且 token 成本不用考慮"], "a": 1, "e": "Loop 要有剎車:硬上限(最多改 3 輪)、資料不足就停(不要用自己的知識硬湊)、會花錢(一個 loop 的 token 遠多於聊天)。", "c": ["S10 p.23"]}, {"q": "Graph 和 loop 的差別是什麼?", "o": ["Graph 的流程由人事先畫好,不能跳關,卡住時退回特定一關", "Graph 讓 AI 隨意決定下一步,卡住時就自己想辦法跳關", "Graph 完全不需要檢查,流程跑完就算通過,不會退回", "Graph 只能有一個節點,流程沒有先後順序,卡住就直接結束"], "a": 0, "e": "Graph:流程由人事先畫好,不能跳關,卡住時退回特定一關(像申請流程:系辦 → 院 → 教務處)。在 loop 裡由 AI 決定下一步,在 graph 裡流程是你事先畫好的。", "c": ["S10 p.24"]}, {"q": "「先討論,後生成」是怎麼做的?", "o": ["先直接生成所有檔案與資料夾,再慢慢跟 AI 討論需求,最後才回頭修改檔案", "先讓 AI 訪談(一次一題、約 8–10 題,先不建任何檔案),確認需求摘要後才生成", "只靠一句話 prompt,讓 AI 自己決定需求並直接生成所有檔案與資料夾", "先讓 AI 一次列出約 30 題問卷,不先確認需求摘要就直接生成所有檔案"], "a": 1, "e": "先讓 AI 訪談(一次一題、約 8–10 題,先不建任何檔案),整理需求摘要確認後,才生成 AGENTS.md 與資料夾。", "c": ["S10 p.29", "S10 p.31"]}]}];
+var $=function(s){return document.querySelector(s)};
+var store={};
+try{store=JSON.parse(localStorage.getItem('genai-quest')||'{}')}catch(e){store={}}
+function save(){try{localStorage.setItem('genai-quest',JSON.stringify(store))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+var LET=['A','B','C','D'];
+function home(){
+  $('#play').classList.add('hide');$('#home').classList.remove('hide');
+  var done=0,pts=0;
+  var g=$('#grid');g.innerHTML='';
+  LEVELS.forEach(function(L){
+    var b=store[L.id];if(b!=null){done++;pts+=b}
+    var c=document.createElement('button');c.className='card';
+    c.innerHTML='<div class="lv mono">LEVEL '+L.unit+'</div><h3>'+esc(L.title)+'</h3><p>'+esc(L.blurb)+'</p>'+
+      '<div class="bar"><i style="width:'+(b==null?0:b/5*100)+'%"></i></div>'+
+      '<div class="st"><span>'+(b==null?'尚未挑戰':'最佳 '+b+' / 5')+'</span><span class="'+(b===5?'done':'')+'">'+(b===5?'全對 ✓':'5 題')+'</span></div>';
+    c.onclick=function(){start(L.id)};g.appendChild(c);
+  });
+  $('#stat').innerHTML='<span class="chip">已挑戰 <b>'+done+'</b> / '+LEVELS.length+' 關</span><span class="chip">累計最佳 <b>'+pts+'</b> / '+LEVELS.length*5+' 分</span>';
+  $('#total').textContent=LEVELS.length+' LEVELS · '+LEVELS.length*5+' QUESTIONS';
+  try{history.replaceState(null,'',location.pathname)}catch(e){}
+  window.scrollTo(0,0);
+}
+var S=null;
+function start(id){
+  var L=LEVELS.filter(function(x){return x.id===id})[0];
+  S={L:L,i:0,score:0,res:[],qs:L.questions.map(function(q){
+    var idx=shuffle([0,1,2,3]);
+    return {q:q,opts:idx.map(function(k){return q.o[k]}),ans:idx.indexOf(q.a)};
+  }),locked:false};
+  try{history.replaceState(null,'','#L'+id)}catch(e){}
+  $('#home').classList.add('hide');$('#play').classList.remove('hide');
+  render();window.scrollTo(0,0);
+}
+function segs(){
+  return '<div class="segs">'+S.qs.map(function(_,k){
+    var c=k<S.res.length?(S.res[k]?'ok':'bad'):(k===S.i?'cur':'');return '<i class="'+c+'"></i>'}).join('')+'</div>';
+}
+function render(){
+  var Q=S.qs[S.i],L=S.L;
+  var h='<div class="panel"><div class="head"><span class="tag mono">LEVEL '+L.unit+' · '+esc(L.title)+' · Q'+(S.i+1)+' / 5</span>'+
+    '<button class="btn" id="back">← 回關卡選單</button></div>'+segs()+
+    '<p class="q">'+esc(Q.q.q)+'</p><div class="opts" role="group" aria-label="選項">'+
+    Q.opts.map(function(o,k){return '<button class="opt" data-k="'+k+'"><span class="k mono">'+LET[k]+'</span><span>'+esc(o)+'</span></button>'}).join('')+
+    '</div><div id="exp" aria-live="polite"></div></div>';
+  $('#play').innerHTML=h;S.locked=false;
+  $('#back').onclick=home;
+  [].forEach.call(document.querySelectorAll('.opt'),function(b){b.onclick=function(){pick(+b.dataset.k)}});
+}
+function pick(k){
+  if(S.locked)return;S.locked=true;
+  var Q=S.qs[S.i],ok=k===Q.ans;S.res.push(ok);if(ok)S.score++;
+  S.qs[S.i].picked=k;
+  [].forEach.call(document.querySelectorAll('.opt'),function(b,j){
+    b.disabled=true;
+    if(j===Q.ans)b.classList.add('right');else if(j===k)b.classList.add('wrong');else b.classList.add('dim');
+  });
+  var last=S.i===S.qs.length-1;
+  var cites=Q.q.c.map(function(c){return '<span class="cite">'+esc(c)+'</span>'}).join('');
+  var wk=S.L.wiki.map(function(w){return '<a href="wiki-site/'+w+'.html" target="_blank" rel="noopener">'+w+'</a>'}).join('、');
+  $('#exp').innerHTML='<div class="exp"><div class="v '+(ok?'ok':'bad')+'">'+(ok?'答對了':'答錯了,正確答案是 '+LET[Q.ans])+'</div>'+
+    '<p>'+esc(Q.q.e)+'</p><p>'+cites+'</p><p class="note">延伸閱讀(wiki):'+wk+'</p></div>'+
+    '<div class="actions"><button class="btn pri" id="next">'+(last?'看結果 →':'下一題 →')+'</button></div>';
+  $('#next').onclick=next;$('#next').focus({preventScroll:true});
+  $('#exp').scrollIntoView({behavior:'smooth',block:'nearest'});
+  document.querySelector('.segs').outerHTML=segs();
+}
+function next(){
+  if(S.i<S.qs.length-1){S.i++;render();window.scrollTo(0,0)}else result();
+}
+function result(){
+  var L=S.L,s=S.score;
+  if(store[L.id]==null||s>store[L.id]){store[L.id]=s;save()}
+  var msg=s===5?'全對!這一關你已經掌握了。':s>=3?'不錯!看看下面答錯的題目,再挑戰一次吧。':'先看解析再重來,第二次一定更好。';
+  var wrong=S.qs.map(function(Q,k){return S.res[k]?'':
+    '<div class="rv"><b>Q'+(k+1)+'</b> '+esc(Q.q.q)+'<br><span class="a">正確:'+esc(Q.opts[Q.ans])+'</span><br>'+esc(Q.q.e)+
+    '<br>'+Q.q.c.map(function(c){return '<span class="cite">'+esc(c)+'</span>'}).join('')+'</div>'}).join('');
+  var nxt=LEVELS.filter(function(x){return x.id===L.id+1})[0];
+  $('#play').innerHTML='<div class="panel"><div class="head"><span class="tag mono">LEVEL '+L.unit+' · 結算</span></div>'+
+    '<div class="big mono">'+s+' / 5</div><p>'+msg+'</p>'+segs()+
+    (wrong?'<h3>答錯的題目</h3>'+wrong:'')+
+    '<div class="actions"><button class="btn pri" id="again">重玩這一關</button>'+
+    (nxt?'<button class="btn" id="nx">下一關:'+esc(nxt.title)+'</button>':'')+
+    '<button class="btn" id="menu">回關卡選單</button></div></div>';
+  $('#again').onclick=function(){start(L.id)};
+  if(nxt)$('#nx').onclick=function(){start(nxt.id)};
+  $('#menu').onclick=home;window.scrollTo(0,0);
+}
+document.addEventListener('keydown',function(ev){
+  if($('#play').classList.contains('hide')||!S)return;
+  var k={'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3}[ev.key.toLowerCase()];
+  if(k!=null&&!S.locked&&document.querySelector('.opt')){pick(k)}
+  else if((ev.key==='Enter'||ev.key==='ArrowRight')&&S.locked&&$('#next')){ev.preventDefault();next()}
+  else if(ev.key==='Escape')home();
+});
+var m=/^#L(\d+)$/.exec(location.hash);
+if(m&&LEVELS.some(function(x){return x.id===+m[1]}))start(+m[1]);else home();
 })();
 </script></body></html>
